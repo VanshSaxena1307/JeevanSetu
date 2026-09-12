@@ -1,0 +1,6 @@
+{
+  "name": "JeevanSetu",
+  "description": "Stay informed, Stay Safe. Real-time disaster alerts, offline maps, emergency guides, and local GPS map downloads saved to device storage.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

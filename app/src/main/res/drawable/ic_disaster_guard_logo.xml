@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
+
+    <!-- Hexagonal rounded shield background / outline -->
+    <!-- Top coral-red half -->
+    <path
+        android:fillColor="#F05A4F"
+        android:pathData="M64,14 C67.5,14 87,24 100,32 C108,37 112,42 112,52 C112,65 106,75 96,85 L44,48 C51,33 58,22 64,14 Z" />
+
+    <path
+        android:fillColor="#F05A4F"
+        android:pathData="M64,14 C60.5,14 41,24 28,32 C20,37 16,42 16,52 C16,66 21,79 32,90 L96,43 C87,28 73,19 64,14 Z" />
+
+    <!-- Bottom sky-blue half -->
+    <path
+        android:fillColor="#4BA3E3"
+        android:pathData="M32,90 C43,101 55,110 62,113.5 C63.2,114.1 64.8,114.1 66,113.5 C73,110 85,101 96,90 C96.5,89.5 97,89 97.5,88.5 L36.5,52.5 C28,68 28,78 32,90 Z" />
+
+    <!-- White divider line / space -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,76 L104,30 C106,31 108,33 108,35 L28,81 C26,79 25,78 24,76 Z" />
+</vector>

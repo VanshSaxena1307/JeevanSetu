@@ -57,11 +57,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.presentation.viewmodel.JeevanSetuViewModel
-import com.example.ui.theme.JeevanBg
-import com.example.ui.theme.JeevanBrandGreen
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
-import com.example.ui.theme.JeevanTextMuted
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.CautionAmber
+import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.RescueCyan
+import com.example.ui.theme.SafetyGreen
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarningOrange
 
 @Composable
 fun OfflineMapScreen(
@@ -73,7 +81,7 @@ fun OfflineMapScreen(
     var showLayersMenu by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = JeevanBg
+        containerColor = AppBackground
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -81,20 +89,20 @@ fun OfflineMapScreen(
                 .padding(innerPadding)
                 .testTag("offline_map_screen")
         ) {
-            // Tactical Dark Map Canvas
+            // Mint Breeze Light Map Canvas
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val w = size.width
                 val h = size.height
 
-                // Base Tactical Dark Canvas
-                drawRect(color = Color(0xFF0C141C))
+                // Base Cartographic Light Canvas
+                drawRect(color = Color(0xFFF1F6F4))
 
-                // Cartographic Grid Lines
+                // Cartographic Grid Lines (Subtle)
                 val gridStep = 40.dp.toPx()
                 var x = 0f
                 while (x < w) {
                     drawLine(
-                        color = Color(0xFF131F2A),
+                        color = Color(0xFFE2ECE8),
                         start = Offset(x, 0f),
                         end = Offset(x, h),
                         strokeWidth = 1.dp.toPx()
@@ -104,7 +112,7 @@ fun OfflineMapScreen(
                 var y = 0f
                 while (y < h) {
                     drawLine(
-                        color = Color(0xFF131F2A),
+                        color = Color(0xFFE2ECE8),
                         start = Offset(0f, y),
                         end = Offset(w, y),
                         strokeWidth = 1.dp.toPx()
@@ -112,7 +120,7 @@ fun OfflineMapScreen(
                     y += gridStep
                 }
 
-                // Dark Blue River / Waterbody Path
+                // River / Waterbody Path (Soft Aquatic Blue)
                 val riverPath = Path().apply {
                     moveTo(w * 0.1f, 0f)
                     cubicTo(w * 0.35f, h * 0.25f, w * 0.25f, h * 0.6f, w * 0.45f, h)
@@ -120,17 +128,17 @@ fun OfflineMapScreen(
                     cubicTo(w * 0.35f, h * 0.6f, w * 0.45f, h * 0.25f, w * 0.2f, 0f)
                     close()
                 }
-                drawPath(path = riverPath, color = Color(0xFF0F2639), style = Fill)
-                drawPath(path = riverPath, color = Color(0xFF1B3B55), style = Stroke(width = 1.5.dp.toPx()))
+                drawPath(path = riverPath, color = Color(0xFFD4EBF8), style = Fill)
+                drawPath(path = riverPath, color = Color(0xFFB3DDF5), style = Stroke(width = 1.5.dp.toPx()))
 
                 // Secondary Stream / Water Canal
                 val canalPath = Path().apply {
                     moveTo(w * 0.35f, h * 0.38f)
                     cubicTo(w * 0.6f, h * 0.35f, w * 0.75f, h * 0.48f, w, h * 0.45f)
                 }
-                drawPath(path = canalPath, color = Color(0xFF143048), style = Stroke(width = 4.dp.toPx()))
+                drawPath(path = canalPath, color = Color(0xFFB9E2F8), style = Stroke(width = 4.dp.toPx()))
 
-                // Tactical Road Networks
+                // Road Networks (Clean White Avenues with subtle edge)
                 val roadLines = listOf(
                     // Major Avenue 1 (Vertical)
                     Pair(Offset(w * 0.62f, 0f), Offset(w * 0.62f, h)),
@@ -143,8 +151,16 @@ fun OfflineMapScreen(
                     Pair(Offset(w * 0.4f, h * 0.5f), Offset(w * 0.95f, h * 0.5f))
                 )
                 roadLines.forEach { (start, end) ->
+                    // Road edge
                     drawLine(
-                        color = Color(0xFF203244),
+                        color = Color(0xFFD8E4E0),
+                        start = start,
+                        end = end,
+                        strokeWidth = 4.5.dp.toPx()
+                    )
+                    // Road surface
+                    drawLine(
+                        color = Color.White,
                         start = start,
                         end = end,
                         strokeWidth = 3.dp.toPx()
@@ -161,19 +177,19 @@ fun OfflineMapScreen(
                 }
                 drawPath(
                     path = floodPolygon,
-                    color = Color(0xFFEF4444).copy(alpha = 0.22f),
+                    color = EmergencyRed.copy(alpha = 0.12f),
                     style = Fill
                 )
                 drawPath(
                     path = floodPolygon,
-                    color = Color(0xFFEF4444).copy(alpha = 0.6f),
+                    color = EmergencyRed.copy(alpha = 0.65f),
                     style = Stroke(
                         width = 1.5.dp.toPx(),
                         pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 6f), 0f)
                     )
                 )
 
-                // Safe Route Line (Bright Neon Emerald Line from User to Shelter)
+                // Safe Route Line (Mint Deep Line from User to Shelter)
                 val userPos = Offset(w * 0.66f, h * 0.53f)
                 val shelterPos = Offset(w * 0.62f, h * 0.68f)
 
@@ -185,61 +201,61 @@ fun OfflineMapScreen(
                 // Glow stroke
                 drawPath(
                     path = safeRoute,
-                    color = Color(0xFF22C55E).copy(alpha = 0.35f),
+                    color = MintPrimary.copy(alpha = 0.28f),
                     style = Stroke(width = 8.dp.toPx())
                 )
                 // Solid green core
                 drawPath(
                     path = safeRoute,
-                    color = Color(0xFF22C55E),
-                    style = Stroke(width = 3.dp.toPx())
+                    color = MintDeep,
+                    style = Stroke(width = 3.5.dp.toPx())
                 )
 
                 // Resource & Infrastructure Pins on Map
-                // 1. Shelter Pins (Green circles with house)
+                // 1. Shelter Pins
                 val shelters = listOf(
-                    Offset(w * 0.62f, h * 0.68f), // Nearest shelter
+                    Offset(w * 0.62f, h * 0.68f),
                     Offset(w * 0.25f, h * 0.48f)
                 )
                 shelters.forEach { pos ->
-                    drawCircle(color = Color(0xFF10B981).copy(alpha = 0.3f), radius = 14.dp.toPx(), center = pos)
-                    drawCircle(color = Color(0xFF10B981), radius = 8.dp.toPx(), center = pos)
+                    drawCircle(color = MintLight, radius = 14.dp.toPx(), center = pos)
+                    drawCircle(color = MintDeep, radius = 8.dp.toPx(), center = pos)
                     drawCircle(color = Color.White, radius = 3.dp.toPx(), center = pos)
                 }
 
-                // 2. Hospital Pins (Red Cross points)
+                // 2. Hospital Pins
                 val hospitals = listOf(
                     Offset(w * 0.82f, h * 0.44f)
                 )
                 hospitals.forEach { pos ->
-                    drawCircle(color = Color(0xFFEF4444).copy(alpha = 0.3f), radius = 14.dp.toPx(), center = pos)
-                    drawCircle(color = Color(0xFFEF4444), radius = 8.dp.toPx(), center = pos)
+                    drawCircle(color = EmergencyRed.copy(alpha = 0.2f), radius = 14.dp.toPx(), center = pos)
+                    drawCircle(color = EmergencyRed, radius = 8.dp.toPx(), center = pos)
                     drawCircle(color = Color.White, radius = 3.dp.toPx(), center = pos)
                 }
 
-                // 3. Water Source Pins (Blue water drop)
+                // 3. Water Source Pins
                 val waterSources = listOf(
                     Offset(w * 0.36f, h * 0.44f),
                     Offset(w * 0.72f, h * 0.33f)
                 )
                 waterSources.forEach { pos ->
-                    drawCircle(color = Color(0xFF38BDF8).copy(alpha = 0.3f), radius = 14.dp.toPx(), center = pos)
-                    drawCircle(color = Color(0xFF38BDF8), radius = 8.dp.toPx(), center = pos)
+                    drawCircle(color = RescueCyan.copy(alpha = 0.2f), radius = 14.dp.toPx(), center = pos)
+                    drawCircle(color = RescueCyan, radius = 8.dp.toPx(), center = pos)
                     drawCircle(color = Color.White, radius = 3.dp.toPx(), center = pos)
                 }
 
-                // 4. Community Point (Orange)
+                // 4. Community Point
                 val communityPoints = listOf(
                     Offset(w * 0.32f, h * 0.54f)
                 )
                 communityPoints.forEach { pos ->
-                    drawCircle(color = Color(0xFFF97316).copy(alpha = 0.3f), radius = 14.dp.toPx(), center = pos)
-                    drawCircle(color = Color(0xFFF97316), radius = 8.dp.toPx(), center = pos)
+                    drawCircle(color = WarningOrange.copy(alpha = 0.2f), radius = 14.dp.toPx(), center = pos)
+                    drawCircle(color = WarningOrange, radius = 8.dp.toPx(), center = pos)
                 }
 
-                // 5. User Position ("● You" Blue pulsating GPS marker)
-                drawCircle(color = Color(0xFF38BDF8).copy(alpha = 0.25f), radius = 18.dp.toPx(), center = userPos)
-                drawCircle(color = Color(0xFF38BDF8), radius = 9.dp.toPx(), center = userPos)
+                // 5. User Position ("You" GPS marker)
+                drawCircle(color = MintPrimary.copy(alpha = 0.25f), radius = 18.dp.toPx(), center = userPos)
+                drawCircle(color = MintPrimary, radius = 9.dp.toPx(), center = userPos)
                 drawCircle(color = Color.White, radius = 4.dp.toPx(), center = userPos)
             }
 
@@ -260,14 +276,14 @@ fun OfflineMapScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back",
-                                tint = Color.White
+                                tint = TextPrimary
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     Text(
                         text = "Offline Map",
-                        color = Color.White,
+                        color = TextPrimary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -279,12 +295,13 @@ fun OfflineMapScreen(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF15222E))
+                            .background(SurfaceWhite)
+                            .border(1.dp, BorderSubtle, CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Layers,
                             contentDescription = "Layers",
-                            tint = Color(0xFFCBD5E1),
+                            tint = TextPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -294,35 +311,36 @@ fun OfflineMapScreen(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF15222E))
+                            .background(SurfaceWhite)
+                            .border(1.dp, BorderSubtle, CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
                             contentDescription = "My Location",
-                            tint = Color(0xFF38BDF8),
+                            tint = MintPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }
                 }
             }
 
-            // Floating Tactical Map Legend (Matching Phone 4)
+            // Floating Map Legend
             Box(
                 modifier = Modifier
                     .padding(start = 16.dp, top = 60.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xEE111C26))
-                    .border(1.dp, Color(0xFF1F3244), RoundedCornerShape(12.dp))
+                    .background(SurfaceWhite.copy(alpha = 0.95f))
+                    .border(1.dp, BorderSubtle, RoundedCornerShape(12.dp))
                     .padding(horizontal = 10.dp, vertical = 8.dp)
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    LegendItem(dotColor = Color(0xFF38BDF8), label = "You")
-                    LegendItem(dotColor = Color(0xFF22C55E), label = "Shelter")
-                    LegendItem(dotColor = Color(0xFFEF4444), label = "Hospital")
-                    LegendItem(dotColor = Color(0xFF0EA5E9), label = "Water Source")
-                    LegendItem(dotColor = Color(0xFFF97316), label = "Community Point")
-                    LegendLine(lineColor = Color(0xFF22C55E), label = "Safe Route")
-                    LegendLine(lineColor = Color(0xFFEF4444), label = "Restricted Area", isDashed = true)
+                    LegendItem(dotColor = MintPrimary, label = "You")
+                    LegendItem(dotColor = MintDeep, label = "Shelter")
+                    LegendItem(dotColor = EmergencyRed, label = "Hospital")
+                    LegendItem(dotColor = RescueCyan, label = "Water Source")
+                    LegendItem(dotColor = WarningOrange, label = "Community Point")
+                    LegendLine(lineColor = MintDeep, label = "Safe Route")
+                    LegendLine(lineColor = EmergencyRed, label = "Restricted Area", isDashed = true)
                 }
             }
 
@@ -335,13 +353,13 @@ fun OfflineMapScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Flooded Area",
-                        color = Color(0xFFF87171),
+                        color = EmergencyRed,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "(Unsafe)",
-                        color = Color(0xFFFCA5A5),
+                        color = EmergencyRed.copy(alpha = 0.8f),
                         fontSize = 10.sp
                     )
                 }
@@ -358,12 +376,12 @@ fun OfflineMapScreen(
                         modifier = Modifier
                             .width(42.dp)
                             .height(2.dp)
-                            .background(Color(0xFFCBD5E1))
+                            .background(TextSecondary)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "2 km",
-                        color = Color(0xFFCBD5E1),
+                        color = TextSecondary,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -382,13 +400,13 @@ fun OfflineMapScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFF152331))
-                        .border(1.dp, Color(0xFF23374D), CircleShape)
+                        .background(SurfaceWhite)
+                        .border(1.dp, BorderSubtle, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Explore,
                         contentDescription = "Compass",
-                        tint = Color(0xFF38BDF8),
+                        tint = MintDeep,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -397,27 +415,27 @@ fun OfflineMapScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFF152331))
-                        .border(1.dp, Color(0xFF23374D), CircleShape)
+                        .background(SurfaceWhite)
+                        .border(1.dp, BorderSubtle, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Default.MyLocation,
                         contentDescription = "Target",
-                        tint = Color(0xFF22C55E),
+                        tint = MintPrimary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
 
-            // Nearest Shelter Floating Card at Bottom (Matching Phone 4)
+            // Nearest Shelter Floating Card at Bottom
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF121E2A))
-                    .border(1.dp, Color(0xFF223547), RoundedCornerShape(16.dp))
+                    .background(SurfaceWhite)
+                    .border(1.dp, BorderSubtle, RoundedCornerShape(16.dp))
                     .padding(14.dp)
             ) {
                 Column {
@@ -431,13 +449,13 @@ fun OfflineMapScreen(
                                 modifier = Modifier
                                     .size(38.dp)
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(Color(0xFF133626)),
+                                    .background(MintLight),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Home,
                                     contentDescription = "Shelter",
-                                    tint = JeevanBrandGreen,
+                                    tint = MintDeep,
                                     modifier = Modifier.size(22.dp)
                                 )
                             }
@@ -446,14 +464,14 @@ fun OfflineMapScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = "Nearest Shelter",
-                                        color = Color.White,
+                                        color = TextPrimary,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = "1.2 km",
-                                        color = Color(0xFF86EFAC),
+                                        color = MintDeep,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.SemiBold
                                     )
@@ -461,7 +479,7 @@ fun OfflineMapScreen(
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = "Community Hall, Sector 22",
-                                    color = JeevanTextMuted,
+                                    color = TextSecondary,
                                     fontSize = 12.sp
                                 )
                             }
@@ -470,14 +488,14 @@ fun OfflineMapScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                             contentDescription = null,
-                            tint = JeevanTextMuted,
+                            tint = TextSecondary,
                             modifier = Modifier.size(14.dp)
                         )
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Green Action Button: Navigate (Offline)
+                    // Navigate (Offline) Button
                     Button(
                         onClick = {
                             val uri = Uri.parse("geo:28.6139,77.2090?q=Community+Hall+Sector+22")
@@ -489,20 +507,20 @@ fun OfflineMapScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(44.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen),
+                        colors = ButtonDefaults.buttonColors(containerColor = MintPrimary),
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.NearMe,
                                 contentDescription = null,
-                                tint = Color.Black,
+                                tint = Color.White,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "Navigate (Offline)",
-                                color = Color.Black,
+                                color = Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -532,7 +550,7 @@ private fun LegendItem(
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = label,
-            color = Color(0xFFCBD5E1),
+            color = TextSecondary,
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium
         )
@@ -558,7 +576,7 @@ private fun LegendLine(
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = label,
-            color = Color(0xFFCBD5E1),
+            color = TextSecondary,
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium
         )

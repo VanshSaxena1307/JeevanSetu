@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,12 +26,19 @@ import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Emergency
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.LocalGasStation
+import androidx.compose.material.icons.filled.LocalHospital
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MedicalServices
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.PhoneInTalk
+import androidx.compose.material.icons.filled.RateReview
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Translate
@@ -41,9 +46,14 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -69,20 +79,33 @@ import com.example.domain.model.RiskLevel
 import com.example.presentation.components.CircularResourceGauge
 import com.example.presentation.components.JeevanSetuLogo
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.MintVeryLight
+import com.example.ui.theme.StatusCritical
+import com.example.ui.theme.StatusCriticalBg
+import com.example.ui.theme.StatusCriticalBorder
+import com.example.ui.theme.StatusDanger
+import com.example.ui.theme.StatusDangerBg
+import com.example.ui.theme.StatusDangerBorder
+import com.example.ui.theme.StatusElevated
+import com.example.ui.theme.StatusElevatedBg
+import com.example.ui.theme.StatusElevatedBorder
+import com.example.ui.theme.StatusInfo
+import com.example.ui.theme.StatusSuccess
+import com.example.ui.theme.StatusSuccessBg
+import com.example.ui.theme.StatusSuccessBorder
+import com.example.ui.theme.StatusWarning
+import com.example.ui.theme.StatusWarningBg
+import com.example.ui.theme.StatusWarningBorder
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.TextTertiary
 import java.util.Locale
-import com.example.ui.theme.JeevanBatteryAmber
-import com.example.ui.theme.JeevanBg
-import com.example.ui.theme.JeevanBrandGreen
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
-import com.example.ui.theme.JeevanEquipmentCyan
-import com.example.ui.theme.JeevanFoodYellow
-import com.example.ui.theme.JeevanFuelOrange
-import com.example.ui.theme.JeevanGreenBg
-import com.example.ui.theme.JeevanGreenBorder
-import com.example.ui.theme.JeevanMedicalRed
-import com.example.ui.theme.JeevanTextMuted
-import com.example.ui.theme.JeevanWaterBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,8 +139,8 @@ fun DashboardScreen(
     var showLanguageSheet by remember { mutableStateOf(false) }
 
     val isOnline = dashboardState.isOnline
-    val networkStatusText = if (isOnline) "Connected" else "Offline Mode"
-    val networkStatusColor = if (isOnline) Color(0xFF38BDF8) else JeevanBrandGreen
+    val networkStatusText = if (isOnline) "Online" else "Offline"
+    val networkStatusColor = if (isOnline) StatusSuccess else StatusWarning
 
     val totalPeople = remember(userProfile) {
         val adults = userProfile?.numberOfAdults ?: 0
@@ -126,7 +149,7 @@ fun DashboardScreen(
         val injured = userProfile?.numberOfInjured ?: 0
         adults + children + elderly + injured
     }
-    val peopleDisplay = if (totalPeople > 0) "$totalPeople people" else "Not set"
+    val peopleDisplay = if (totalPeople > 0) "$totalPeople members" else "Set up"
 
     val locationDisplay = remember(displayLocation, dashboardState.userLocation, dashboardState.isGpsActive, dashboardState.isOnline, userProfile) {
         val name = when {
@@ -141,12 +164,7 @@ fun DashboardScreen(
         if (name.isBlank()) {
             "Location unavailable"
         } else {
-            val status = when {
-                dashboardState.isGpsActive -> "GPS Active"
-                dashboardState.isOnline -> "Network"
-                else -> "Offline"
-            }
-            "$name\n( $status )"
+            name
         }
     }
 
@@ -158,9 +176,9 @@ fun DashboardScreen(
             val hours = (elapsedMs / 3600000L).toInt()
             val days = (elapsedMs / 86400000L).toInt()
             when {
-                days > 0 -> "$days day${if (days > 1) "s" else ""} ${hours % 24}h"
-                hours > 0 -> "$hours hr${if (hours > 1) "s" else ""} ${mins % 60}m"
-                else -> "$mins min${if (mins != 1) "s" else ""}"
+                days > 0 -> "$days d ${hours % 24}h ago"
+                hours > 0 -> "$hours hr ${mins % 60}m ago"
+                else -> "$mins min ago"
             }
         } else {
             "Not assessed"
@@ -177,9 +195,9 @@ fun DashboardScreen(
             val remainingMs = intervalMs - elapsedInInterval
             val remHours = (remainingMs / 3600000L).toInt()
             val remMins = ((remainingMs % 3600000L) / 60000L).toInt()
-            if (remHours > 0) "in $remHours hr ${remMins}m" else "in $remMins min"
+            if (remHours > 0) "In $remHours hr ${remMins}m" else "In $remMins min"
         } else {
-            "Tap to assess"
+            "Ready now"
         }
     }
 
@@ -197,180 +215,140 @@ fun DashboardScreen(
         val assessment = dashboardState.latestAssessment
 
         when {
-            // CRITICAL: Zero or depleted drinking water
             waterEstimate.drinkingLiters <= 0.0 -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: NO WATER",
-                    subtitle = "Zero drinking water available! Seek immediate potable hydration source or rescue."
+                    title = "Critical: No Drinking Water",
+                    subtitle = "Zero drinking water available. Seek immediate safe hydration or emergency rescue."
                 )
             }
-            // CRITICAL: Water reserves < 2 days
             waterEstimate.status == ResourceStatus.CRITICAL -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: WATER DEPLETION",
-                    subtitle = "Water reserves will exhaust in ${String.format(Locale.US, "%.1f", waterEstimate.estimatedDaysDrinking)} days. Adopt emergency 1.5L/day rationing immediately."
+                    title = "Critical: Water Depletion",
+                    subtitle = "Water reserves will exhaust in ${String.format(Locale.US, "%.1f", waterEstimate.estimatedDaysDrinking)} days. Ration strictly to 1.5L per person per day."
                 )
             }
-            // CRITICAL: Extreme disaster danger / evacuation order
             risk == RiskLevel.CRITICAL -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: IMMEDIATE DANGER",
-                    subtitle = assessment?.headline ?: "Extreme hazard level active. Follow urgent evacuation directives."
+                    title = "Critical: Immediate Danger",
+                    subtitle = assessment?.headline ?: "Extreme hazard detected. Follow urgent safety and evacuation directives."
                 )
             }
-            // CRITICAL: Zero food
             foodEstimate.totalMeals <= 0 -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: NO FOOD",
-                    subtitle = "Zero food rations remaining. Adopt emergency hunger protocols and signal rescue."
+                    title = "Critical: No Food Remaining",
+                    subtitle = "Zero food meals remaining. Adopt emergency rationing and signal for assistance."
                 )
             }
-            // CRITICAL: Food reserves < 2 days
             foodEstimate.status == ResourceStatus.CRITICAL -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: FOOD SHORTAGE",
-                    subtitle = "Food reserves critically low (${String.format(Locale.US, "%.1f", foodEstimate.estimatedDaysRemaining)} days). Limit to emergency survival rations."
+                    title = "Critical: Food Shortage",
+                    subtitle = "Food supplies critically low (${String.format(Locale.US, "%.1f", foodEstimate.estimatedDaysRemaining)} days remaining)."
                 )
             }
-            // CRITICAL: Battery <= 20%
             powerEstimate.status == ResourceStatus.CRITICAL -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: BATTERY EXHAUSTION",
+                    title = "Critical: Battery Depleted",
                     subtitle = "Device battery at ${powerEstimate.phoneBatteryPercent}%. Enable ultra battery saver immediately."
                 )
             }
-            // CRITICAL: Fuel critically low (<= 15%) when vehicle owned
             fuelEstimate.hasVehicle && fuelEstimate.status == ResourceStatus.CRITICAL -> {
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: FUEL DEPLETION",
-                    subtitle = "Vehicle fuel at ${fuelEstimate.fuelPercent}%. Evacuation range (${fuelEstimate.estimatedRangeKm.toInt()} km) is below safe emergency threshold."
+                    title = "Critical: Fuel Low",
+                    subtitle = "Vehicle fuel at ${fuelEstimate.fuelPercent}%. Safe evacuation range is below recommended threshold."
                 )
             }
-            // CRITICAL: Critical medicine running out (< 2 days)
             medicines.any { it.isCritical && (if (it.dailyUsage > 0) it.quantity / it.dailyUsage else it.daysRemaining) < 2 } -> {
                 val med = medicines.first { it.isCritical && (if (it.dailyUsage > 0) it.quantity / it.dailyUsage else it.daysRemaining) < 2 }
                 BannerState(
                     severity = BannerSeverity.CRITICAL,
-                    title = "CRITICAL: MEDICINE SHORTAGE",
-                    subtitle = "Critical supply of ${med.name} exhausts in less than 48 hours."
+                    title = "Critical: Medicine Depletion",
+                    subtitle = "Critical supply of ${med.name} will run out in less than 48 hours."
                 )
             }
-
-            // WARNING: High disaster risk
             risk == RiskLevel.HIGH -> {
                 BannerState(
                     severity = BannerSeverity.WARNING,
-                    title = "WARNING: HIGH DISASTER RISK",
-                    subtitle = assessment?.headline ?: "High threat conditions detected. Prepare evacuation bag and monitor local routes."
+                    title = "Warning: High Risk Conditions",
+                    subtitle = assessment?.headline ?: "High threat conditions detected. Prepare your go-bag and monitor routes."
                 )
             }
-            // WARNING: Insufficient fuel to reach safe shelter
             fuelEstimate.hasVehicle && !fuelEstimate.canReachSafeLocation -> {
                 BannerState(
                     severity = BannerSeverity.WARNING,
-                    title = "WARNING: INSUFFICIENT FUEL",
-                    subtitle = "Vehicle range (${fuelEstimate.estimatedRangeKm.toInt()} km) may be insufficient to reach safe shelter with detour buffers."
+                    title = "Warning: Insufficient Fuel",
+                    subtitle = "Vehicle range (${fuelEstimate.estimatedRangeKm.toInt()} km) may be insufficient to reach verified safe shelter."
                 )
             }
-
-            // CONSERVE: Water limited (2 to 5 days)
             waterEstimate.status == ResourceStatus.LIMITED -> {
-                val hours = (waterEstimate.estimatedDaysDrinking * 24).toInt()
                 BannerState(
                     severity = BannerSeverity.CONSERVE,
-                    title = "CONSERVE WATER",
-                    subtitle = "At current usage, water becomes critical in ${String.format(Locale.US, "%.1f", waterEstimate.estimatedDaysDrinking)} days ($hours hours). Restrict non-drinking use."
+                    title = "Conserve Water Supplies",
+                    subtitle = "Water estimated for ${String.format(Locale.US, "%.1f", waterEstimate.estimatedDaysDrinking)} days. Restrict non-essential water usage."
                 )
             }
-            // CONSERVE: Food limited (2 to 6 days)
             foodEstimate.status == ResourceStatus.LIMITED -> {
                 BannerState(
                     severity = BannerSeverity.CONSERVE,
-                    title = "CONSERVE FOOD",
-                    subtitle = "Food supplies limited to ${String.format(Locale.US, "%.1f", foodEstimate.estimatedDaysRemaining)} days. Prioritize consuming perishable items first."
+                    title = "Conserve Food Reserves",
+                    subtitle = "Food supplies limited to ${String.format(Locale.US, "%.1f", foodEstimate.estimatedDaysRemaining)} days. Consume perishables first."
                 )
             }
-            // CONSERVE: Battery limited (<= 45%)
-            powerEstimate.status == ResourceStatus.LIMITED -> {
-                BannerState(
-                    severity = BannerSeverity.CONSERVE,
-                    title = "CONSERVE POWER",
-                    subtitle = "Battery at ${powerEstimate.phoneBatteryPercent}%. Restrict screen time and disable background radios."
-                )
-            }
-            // CONSERVE: Fuel limited (15% to 35%)
             fuelEstimate.hasVehicle && fuelEstimate.status == ResourceStatus.LIMITED -> {
                 BannerState(
                     severity = BannerSeverity.CONSERVE,
-                    title = "CONSERVE FUEL",
-                    subtitle = "Fuel at ${fuelEstimate.fuelPercent}%. Reserve vehicle strictly for essential evacuation movement."
+                    title = "Conserve Fuel",
+                    subtitle = "Vehicle fuel at ${fuelEstimate.fuelPercent}%. Reserve strictly for emergency transit."
                 )
             }
-            // CONSERVE: Moderate disaster risk
             risk == RiskLevel.MODERATE -> {
                 BannerState(
                     severity = BannerSeverity.CONSERVE,
-                    title = "MONITOR: MODERATE RISK",
-                    subtitle = assessment?.headline ?: "Moderate hazards present in area. Review emergency supplies and shelters."
+                    title = "Advisory: Moderate Risk",
+                    subtitle = assessment?.headline ?: "Moderate hazards present in your area. Review emergency supplies and safe shelters."
                 )
             }
-            // CONSERVE: Unconfigured household profile
             userProfile == null -> {
                 BannerState(
                     severity = BannerSeverity.CONSERVE,
-                    title = "SETUP PROFILE",
-                    subtitle = "Configure household members in Family Profile to calculate precise survival quotas."
+                    title = "Setup Household Profile",
+                    subtitle = "Configure family members to calculate accurate water and food survival quotas."
                 )
             }
-
-            // SAFE: All resources sufficient and disaster risk low
             else -> {
                 val minDays = minOf(waterEstimate.estimatedDaysDrinking, foodEstimate.estimatedDaysRemaining)
                 BannerState(
                     severity = BannerSeverity.SAFE,
-                    title = "SAFE",
-                    subtitle = "Current supplies estimated to last ${String.format(Locale.US, "%.1f", minDays)} days."
+                    title = "Status: Stable & Prepared",
+                    subtitle = "Essential supplies estimated to last approximately ${String.format(Locale.US, "%.1f", minDays)} days."
                 )
             }
         }
     }
 
     val bannerBg = when (bannerState.severity) {
-        BannerSeverity.SAFE -> JeevanGreenBg
-        BannerSeverity.CONSERVE -> Color(0xFF28200F)
-        BannerSeverity.WARNING -> Color(0xFF301A0E)
-        BannerSeverity.CRITICAL -> Color(0xFF331114)
+        BannerSeverity.SAFE -> StatusSuccessBg
+        BannerSeverity.CONSERVE -> StatusWarningBg
+        BannerSeverity.WARNING -> StatusElevatedBg
+        BannerSeverity.CRITICAL -> StatusCriticalBg
     }
     val bannerBorder = when (bannerState.severity) {
-        BannerSeverity.SAFE -> JeevanGreenBorder
-        BannerSeverity.CONSERVE -> Color(0xFF6B4E1B)
-        BannerSeverity.WARNING -> Color(0xFF7C3612)
-        BannerSeverity.CRITICAL -> Color(0xFF7A1E26)
+        BannerSeverity.SAFE -> StatusSuccessBorder
+        BannerSeverity.CONSERVE -> StatusWarningBorder
+        BannerSeverity.WARNING -> StatusElevatedBorder
+        BannerSeverity.CRITICAL -> StatusCriticalBorder
     }
-    val bannerIconBg = when (bannerState.severity) {
-        BannerSeverity.SAFE -> Color(0xFF123C2C)
-        BannerSeverity.CONSERVE -> Color(0xFF382B12)
-        BannerSeverity.WARNING -> Color(0xFF452210)
-        BannerSeverity.CRITICAL -> Color(0xFF48141B)
-    }
-    val bannerTint = when (bannerState.severity) {
-        BannerSeverity.SAFE -> JeevanBrandGreen
-        BannerSeverity.CONSERVE -> JeevanFoodYellow
-        BannerSeverity.WARNING -> JeevanFuelOrange
-        BannerSeverity.CRITICAL -> JeevanMedicalRed
-    }
-    val bannerTextColor = when (bannerState.severity) {
-        BannerSeverity.SAFE -> Color(0xFF86EFAC)
-        BannerSeverity.CONSERVE -> Color(0xFFFDE047)
-        BannerSeverity.WARNING -> Color(0xFFFDBA74)
-        BannerSeverity.CRITICAL -> Color(0xFFFCA5A5)
+    val bannerAccent = when (bannerState.severity) {
+        BannerSeverity.SAFE -> StatusSuccess
+        BannerSeverity.CONSERVE -> StatusWarning
+        BannerSeverity.WARNING -> StatusElevated
+        BannerSeverity.CRITICAL -> StatusCritical
     }
     val bannerIcon = when (bannerState.severity) {
         BannerSeverity.SAFE -> Icons.Default.Security
@@ -384,60 +362,60 @@ fun DashboardScreen(
     val waterProgress = (waterDays / 7.0).toFloat().coerceIn(0f, 1f)
     val waterPercent = (waterProgress * 100).toInt()
     val waterSubtitle = if (waterEstimate.drinkingLiters <= 0.0) {
-        "0.0 L\n(0%)"
+        "0.0 L\n0%"
     } else {
-        "${String.format(Locale.US, "%.1f", waterDays)} days\n($waterPercent%)"
+        "${String.format(Locale.US, "%.1f", waterDays)} days\n$waterPercent%"
     }
     val waterColor = when (waterEstimate.status) {
-        ResourceStatus.CRITICAL -> JeevanMedicalRed
-        ResourceStatus.LIMITED -> JeevanBatteryAmber
-        ResourceStatus.SUFFICIENT -> JeevanWaterBlue
+        ResourceStatus.CRITICAL -> StatusCritical
+        ResourceStatus.LIMITED -> StatusWarning
+        ResourceStatus.SUFFICIENT -> MintDeep
     }
 
     val foodDays = foodEstimate.estimatedDaysRemaining
     val foodProgress = (foodDays / 7.0).toFloat().coerceIn(0f, 1f)
     val foodPercent = (foodProgress * 100).toInt()
     val foodSubtitle = if (foodEstimate.totalMeals <= 0) {
-        "0 meals\n(0%)"
+        "0 meals\n0%"
     } else {
-        "${String.format(Locale.US, "%.1f", foodDays)} days\n($foodPercent%)"
+        "${String.format(Locale.US, "%.1f", foodDays)} days\n$foodPercent%"
     }
     val foodColor = when (foodEstimate.status) {
-        ResourceStatus.CRITICAL -> JeevanMedicalRed
-        ResourceStatus.LIMITED -> JeevanFoodYellow
-        ResourceStatus.SUFFICIENT -> JeevanFoodYellow
+        ResourceStatus.CRITICAL -> StatusCritical
+        ResourceStatus.LIMITED -> StatusWarning
+        ResourceStatus.SUFFICIENT -> StatusWarning
     }
 
     val batteryPercent = powerEstimate.phoneBatteryPercent
     val powerProgress = (batteryPercent / 100f).coerceIn(0f, 1f)
     val hours = if (dashboardState.batterySaverActive) powerEstimate.estimatedHoursEco else powerEstimate.estimatedHoursNormal
     val powerSubtitle = if (hours >= 24) {
-        "${String.format(Locale.US, "%.1f", hours / 24.0)} days\n($batteryPercent%)"
+        "${String.format(Locale.US, "%.1f", hours / 24.0)} days\n$batteryPercent%"
     } else {
-        "$hours hrs\n($batteryPercent%)"
+        "$hours hrs\n$batteryPercent%"
     }
     val powerColor = when (powerEstimate.status) {
-        ResourceStatus.CRITICAL -> JeevanMedicalRed
-        ResourceStatus.LIMITED -> JeevanBatteryAmber
-        ResourceStatus.SUFFICIENT -> JeevanBatteryAmber
+        ResourceStatus.CRITICAL -> StatusCritical
+        ResourceStatus.LIMITED -> StatusElevated
+        ResourceStatus.SUFFICIENT -> StatusElevated
     }
 
     val fuelProgress = if (fuelEstimate.hasVehicle) (fuelEstimate.fuelPercent / 100f).coerceIn(0f, 1f) else 0f
     val fuelSubtitle = if (!fuelEstimate.hasVehicle) {
-        "No Vehicle\n(N/A)"
+        "No vehicle\nN/A"
     } else {
-        "${fuelEstimate.estimatedRangeKm.toInt()} km\n(${fuelEstimate.fuelPercent}%)"
+        "${fuelEstimate.estimatedRangeKm.toInt()} km\n${fuelEstimate.fuelPercent}%"
     }
     val fuelColor = when {
-        !fuelEstimate.hasVehicle -> JeevanTextMuted
-        fuelEstimate.status == ResourceStatus.CRITICAL -> JeevanMedicalRed
-        fuelEstimate.status == ResourceStatus.LIMITED -> JeevanFuelOrange
-        else -> JeevanFuelOrange
+        !fuelEstimate.hasVehicle -> TextTertiary
+        fuelEstimate.status == ResourceStatus.CRITICAL -> StatusCritical
+        fuelEstimate.status == ResourceStatus.LIMITED -> StatusElevated
+        else -> StatusElevated
     }
 
     val (medicalSubtitle, medicalProgress, medicalColor) = remember(medicines) {
         if (medicines.isEmpty()) {
-            Triple("0 items\n(0%)", 0f, JeevanMedicalRed)
+            Triple("0 items\n0%", 0f, StatusDanger)
         } else {
             val minDays = medicines.map {
                 if (it.dailyUsage > 0) it.quantity / it.dailyUsage else it.daysRemaining
@@ -448,17 +426,17 @@ fun DashboardScreen(
             val progress = (minDays / 7f).coerceIn(0f, 1f)
             val percent = (progress * 100).toInt()
             val color = when {
-                hasCriticalShortage || minDays < 2 -> JeevanMedicalRed
-                minDays < 5 -> JeevanBatteryAmber
-                else -> Color(0xFF22C55E)
+                hasCriticalShortage || minDays < 2 -> StatusCritical
+                minDays < 5 -> StatusWarning
+                else -> StatusSuccess
             }
-            Triple("$minDays days\n($percent%)", progress, color)
+            Triple("$minDays days\n$percent%", progress, color)
         }
     }
 
     val (equipmentSubtitle, equipmentProgress, equipmentColor) = remember(checklistItems) {
         if (checklistItems.isEmpty()) {
-            Triple("Not set\n(0%)", 0f, JeevanEquipmentCyan)
+            Triple("Not set\n0%", 0f, MintDeep)
         } else {
             val essential = checklistItems.filter { it.isEssential }
             val targetList = if (essential.isNotEmpty()) essential else checklistItems
@@ -472,26 +450,26 @@ fun DashboardScreen(
                 else -> "Low"
             }
             val color = when {
-                progress >= 0.75f -> JeevanEquipmentCyan
-                progress >= 0.40f -> JeevanBatteryAmber
-                else -> JeevanMedicalRed
+                progress >= 0.75f -> StatusSuccess
+                progress >= 0.40f -> StatusWarning
+                else -> StatusCritical
             }
-            Triple("$label\n($percent%)", progress, color)
+            Triple("$label\n$percent%", progress, color)
         }
     }
 
     Scaffold(
-        containerColor = JeevanBg
+        containerColor = AppBackground
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .testTag("dashboard_screen"),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 28.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Top Header: Logo + App Name + Offline Mode + Settings
+            // 1. App Header Area
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -504,16 +482,16 @@ fun DashboardScreen(
                         Column {
                             Text(
                                 text = "Jeevan Setu",
-                                color = Color.White,
+                                color = TextPrimary,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.3.sp
+                                letterSpacing = 0.2.sp
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
-                                        .size(6.dp)
+                                        .size(7.dp)
                                         .clip(CircleShape)
                                         .background(networkStatusColor)
                                 )
@@ -522,19 +500,19 @@ fun DashboardScreen(
                                     text = networkStatusText,
                                     color = networkStatusColor,
                                     fontSize = 11.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.Medium
                                 )
                             }
                         }
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Quick Language Switcher Pill
+                        // Language Switcher
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(20.dp))
-                                .background(Color(0xFF132230))
-                                .border(1.dp, Color(0xFF223548), RoundedCornerShape(20.dp))
+                                .background(SurfaceWhite)
+                                .border(1.dp, BorderSubtle, RoundedCornerShape(20.dp))
                                 .clickable { showLanguageSheet = true }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
@@ -542,13 +520,13 @@ fun DashboardScreen(
                                 Icon(
                                     imageVector = Icons.Default.Translate,
                                     contentDescription = "Language",
-                                    tint = Color(0xFF38BDF8),
+                                    tint = MintDeep,
                                     modifier = Modifier.size(14.dp)
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(5.dp))
                                 Text(
                                     text = currentLanguage.nativeName,
-                                    color = Color.White,
+                                    color = TextPrimary,
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -563,13 +541,13 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFF16222F))
-                                .border(1.dp, JeevanCardBorder, CircleShape)
+                                .background(SurfaceWhite)
+                                .border(1.dp, BorderSubtle, CircleShape)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = "Settings",
-                                tint = Color(0xFFCBD5E1),
+                                tint = TextSecondary,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -577,58 +555,128 @@ fun DashboardScreen(
                 }
             }
 
-            // 2. Dynamic Status Card
+            // 2. Current Safety & Risk Status Card
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(bannerBg)
-                        .border(1.2.dp, bannerBorder, RoundedCornerShape(16.dp))
-                        .padding(18.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = bannerBg),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, bannerBorder),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(18.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(48.dp)
+                                .size(46.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(bannerIconBg)
-                                .border(1.dp, bannerTint, RoundedCornerShape(12.dp)),
+                                .background(bannerAccent.copy(alpha = 0.15f))
+                                .border(1.dp, bannerAccent.copy(alpha = 0.4f), RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = bannerIcon,
                                 contentDescription = bannerState.title,
-                                tint = bannerTint,
-                                modifier = Modifier.size(28.dp)
+                                tint = bannerAccent,
+                                modifier = Modifier.size(26.dp)
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(14.dp))
 
-                        Column {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = bannerState.title,
-                                color = Color.White,
-                                fontSize = 19.sp,
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.5.sp
+                                color = TextPrimary,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(3.dp))
                             Text(
                                 text = bannerState.subtitle,
-                                color = bannerTextColor,
-                                fontSize = 12.sp,
-                                lineHeight = 16.sp
+                                color = TextSecondary,
+                                fontSize = 13.sp,
+                                lineHeight = 17.sp
                             )
                         }
                     }
                 }
             }
 
-            // 3. 4 Context Grid Cards (2x2)
+            // 3. Immediate Recommended Action (Assessment / Evacuation prompt)
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (dashboardState.overallRiskLevel == RiskLevel.CRITICAL || dashboardState.overallRiskLevel == RiskLevel.HIGH) {
+                                onNavigateToEvacuation()
+                            } else {
+                                onNavigateToAssessment()
+                            }
+                        },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(38.dp)
+                                    .clip(CircleShape)
+                                    .background(MintVeryLight),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = if (dashboardState.overallRiskLevel == RiskLevel.CRITICAL) Icons.Default.NearMe else Icons.Default.RateReview,
+                                    contentDescription = null,
+                                    tint = MintDeep,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = if (dashboardState.overallRiskLevel == RiskLevel.CRITICAL) "Immediate Action: Evacuation Plan" else "Emergency Preparedness Check",
+                                    color = TextPrimary,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = if (dashboardState.overallRiskLevel == RiskLevel.CRITICAL) "Inspect verified safe corridors and shelters." else "Assess local conditions to refresh your safety score.",
+                                    color = TextSecondary,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            tint = MintDeep,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
+
+            // 4. Household Survival / Context Overview (4 Tiles)
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Row(
@@ -637,7 +685,7 @@ fun DashboardScreen(
                     ) {
                         ContextTile(
                             icon = Icons.Default.People,
-                            title = "People",
+                            title = "Household",
                             value = peopleDisplay,
                             modifier = Modifier.weight(1f),
                             onClick = onNavigateToFamily
@@ -657,7 +705,7 @@ fun DashboardScreen(
                     ) {
                         ContextTile(
                             icon = Icons.Default.AccessTime,
-                            title = "Time Since",
+                            title = "Last Assessed",
                             value = timeSinceDisplay,
                             modifier = Modifier.weight(1f),
                             onClick = onNavigateToAssessment
@@ -673,48 +721,46 @@ fun DashboardScreen(
                 }
             }
 
-            // 4. Resource Overview Card (with Circular Progress Gauges)
+            // 5. Resource Overview Card
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(JeevanCard)
-                        .border(1.dp, JeevanCardBorder, RoundedCornerShape(16.dp))
-                        .padding(16.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
-                    Column {
-                        // Header row
+                    Column(modifier = Modifier.padding(18.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Resource Overview",
-                                color = Color.White,
-                                fontSize = 15.sp,
+                                text = "Resource Reserves",
+                                color = TextPrimary,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
 
                             Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
+                                    .clip(RoundedCornerShape(8.dp))
                                     .clickable { onNavigateToResources() }
                                     .padding(horizontal = 6.dp, vertical = 2.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "View All",
-                                    color = Color(0xFF38BDF8),
+                                    text = "Manage",
+                                    color = MintDeep,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                    contentDescription = "View All",
-                                    tint = Color(0xFF38BDF8),
+                                    contentDescription = "Manage",
+                                    tint = MintDeep,
                                     modifier = Modifier.size(13.dp)
                                 )
                             }
@@ -722,7 +768,7 @@ fun DashboardScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Row 1 of 3 gauges: Water, Food, Battery
+                        // Row 1: Water, Food, Battery
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround
@@ -752,7 +798,7 @@ fun DashboardScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Row 2 of 3 gauges: Fuel, Medical, Equipment
+                        // Row 2: Fuel, Medical, Equipment
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround
@@ -783,36 +829,90 @@ fun DashboardScreen(
                 }
             }
 
-            // 5. Motivational Quote Banner
+            // 6. Quick Action Navigation Cards
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(Color(0xFF101B24))
-                        .border(1.dp, Color(0xFF1C2C3B), RoundedCornerShape(14.dp))
-                        .padding(horizontal = 18.dp, vertical = 14.dp)
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Emergency Essentials",
+                        color = TextPrimary,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 2.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        ActionTile(
+                            icon = Icons.Default.NearMe,
+                            title = "Evacuation",
+                            subtitle = "Route & Transit",
+                            modifier = Modifier.weight(1f),
+                            onClick = onNavigateToEvacuation
+                        )
+                        ActionTile(
+                            icon = Icons.Default.LocalHospital,
+                            title = "Safe Shelters",
+                            subtitle = "Nearest Points",
+                            modifier = Modifier.weight(1f),
+                            onClick = onNavigateToSafeLocations
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        ActionTile(
+                            icon = Icons.Default.PhoneInTalk,
+                            title = "Helplines",
+                            subtitle = "SOS & Contacts",
+                            modifier = Modifier.weight(1f),
+                            onClick = onNavigateToContacts
+                        )
+                        ActionTile(
+                            icon = Icons.Default.Checklist,
+                            title = "Go-Bag",
+                            subtitle = "Gear Checklist",
+                            modifier = Modifier.weight(1f),
+                            onClick = onNavigateToChecklist
+                        )
+                    }
+                }
+            }
+
+            // 7. Preparedness Motto Card
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = MintVeryLight),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
                     Row(
+                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "“",
-                            color = Color(0xFF38BDF8),
+                            text = "\"",
+                            color = MintDeep,
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(end = 12.dp)
                         )
                         Column {
                             Text(
-                                text = "Plan today.",
-                                color = Color.White,
+                                text = "Plan ahead with confidence.",
+                                color = TextPrimary,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold
                             )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "A safer tomorrow is in your hands.",
-                                color = JeevanTextMuted,
+                                text = "A safer household begins with reliable preparation.",
+                                color = TextSecondary,
                                 fontSize = 12.sp
                             )
                         }
@@ -827,8 +927,8 @@ fun DashboardScreen(
         ModalBottomSheet(
             onDismissRequest = { showLanguageSheet = false },
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-            containerColor = Color(0xFF131F2C),
-            dragHandle = { BottomSheetDefaults.DragHandle(color = Color(0xFF334B5E)) }
+            containerColor = SurfaceWhite,
+            dragHandle = { BottomSheetDefaults.DragHandle(color = BorderSubtle) }
         ) {
             Column(
                 modifier = Modifier
@@ -839,7 +939,7 @@ fun DashboardScreen(
                     text = "Select Language / भाषा चुनें",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = TextPrimary
                 )
                 Spacer(modifier = Modifier.height(14.dp))
 
@@ -849,7 +949,7 @@ fun DashboardScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
-                            .background(if (isSelected) Color(0xFF1C3246) else Color.Transparent)
+                            .background(if (isSelected) MintLight else Color.Transparent)
                             .clickable {
                                 viewModel.setLanguage(language)
                                 showLanguageSheet = false
@@ -863,12 +963,12 @@ fun DashboardScreen(
                                 text = language.nativeName,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = TextPrimary
                             )
                             Text(
                                 text = language.englishName,
                                 fontSize = 12.sp,
-                                color = JeevanTextMuted
+                                color = TextSecondary
                             )
                         }
 
@@ -876,7 +976,7 @@ fun DashboardScreen(
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 contentDescription = "Selected",
-                                tint = JeevanBrandGreen,
+                                tint = MintDeep,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -896,28 +996,30 @@ private fun ContextTile(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Box(
+    Card(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
-            .background(JeevanCard)
-            .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
-            .clickable { onClick() }
-            .padding(14.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .size(34.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFF192533)),
+                    .background(MintVeryLight),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
-                    tint = Color(0xFF60A5FA),
+                    tint = MintDeep,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -927,16 +1029,72 @@ private fun ContextTile(
             Column {
                 Text(
                     text = title,
-                    color = JeevanTextMuted,
+                    color = TextSecondary,
                     fontSize = 11.sp
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = value,
-                    color = Color.White,
+                    color = TextPrimary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 16.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActionTile(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MintVeryLight),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    tint = MintDeep,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Column {
+                Text(
+                    text = title,
+                    color = TextPrimary,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(1.dp))
+                Text(
+                    text = subtitle,
+                    color = TextSecondary,
+                    fontSize = 11.sp
                 )
             }
         }
@@ -955,4 +1113,3 @@ private data class BannerState(
     val title: String,
     val subtitle: String
 )
-

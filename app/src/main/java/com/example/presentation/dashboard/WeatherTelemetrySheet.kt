@@ -43,6 +43,14 @@ import androidx.compose.ui.unit.sp
 import com.example.domain.model.AppLanguage
 import com.example.domain.model.AppStrings
 import com.example.domain.model.LocalizationData
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +63,7 @@ fun WeatherTelemetrySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = Color.White,
+        containerColor = SurfaceWhite,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
         Column(
@@ -73,16 +81,16 @@ fun WeatherTelemetrySheet(
                         text = strings.weatherRadarTitle,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = TextPrimary
                         )
                     )
                     Text(
                         text = "$locationName • ${strings.realtimeBarometer}",
-                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF64748B))
+                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                     )
                 }
                 IconButton(onClick = onDismiss) {
-                    Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF64748B))
+                    Icon(Icons.Default.Close, contentDescription = "Close", tint = TextSecondary)
                 }
             }
 
@@ -92,7 +100,7 @@ fun WeatherTelemetrySheet(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF0284C7)),
+                colors = CardDefaults.cardColors(containerColor = MintDeep),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Row(
@@ -145,7 +153,7 @@ fun WeatherTelemetrySheet(
                 text = strings.surfaceReadings,
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF64748B),
+                    color = TextSecondary,
                     letterSpacing = 1.sp
                 )
             )
@@ -161,14 +169,14 @@ fun WeatherTelemetrySheet(
                     title = "Barometer",
                     value = String.format("%.1f hPa", pressureHpa),
                     icon = Icons.Default.Compress,
-                    iconTint = Color(0xFF0284C7)
+                    iconTint = MintPrimary
                 )
                 TelemetryMetricBox(
                     modifier = Modifier.weight(1f),
                     title = strings.humidityLabel,
                     value = "78%",
                     icon = Icons.Default.WaterDrop,
-                    iconTint = Color(0xFF0284C7)
+                    iconTint = MintPrimary
                 )
             }
 
@@ -183,7 +191,7 @@ fun WeatherTelemetrySheet(
                     title = strings.windLabel,
                     value = "14 km/h",
                     icon = Icons.Default.Air,
-                    iconTint = Color(0xFF06B6D4)
+                    iconTint = MintDeep
                 )
                 TelemetryMetricBox(
                     modifier = Modifier.weight(1f),
@@ -210,8 +218,8 @@ fun TelemetryMetricBox(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFF8FAFC))
-            .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+            .background(AppBackground)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(12.dp))
             .padding(12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -226,8 +234,8 @@ fun TelemetryMetricBox(
             }
             Spacer(modifier = Modifier.width(10.dp))
             Column {
-                Text(text = title, fontSize = 11.sp, color = Color(0xFF64748B))
-                Text(text = value, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+                Text(text = title, fontSize = 11.sp, color = TextSecondary)
+                Text(text = value, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
             }
         }
     }

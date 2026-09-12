@@ -47,13 +47,18 @@ import androidx.compose.material.icons.filled.Shield
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.domain.model.ResourceStatus
 import com.example.presentation.viewmodel.JeevanSetuViewModel
-import com.example.ui.theme.JeevanBrandGreen
-import com.example.ui.theme.JeevanBrandGreenBg
-import com.example.ui.theme.JeevanBrandGreenBorder
-import com.example.ui.theme.JeevanRedBg
-import com.example.ui.theme.JeevanRedBorder
-import com.example.ui.theme.JeevanTextMuted
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.JeevanBatteryAmber
+import com.example.ui.theme.JeevanFuelOrange
 import com.example.ui.theme.JeevanWaterBlue
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import java.util.Locale
 
 @Composable
@@ -94,10 +99,10 @@ fun SmartPredictionsView(
 
     val isAnyCritical = isWaterCritical || isFoodCritical || isPowerCritical || isFuelCritical
 
-    val bannerBg = if (isAnyCritical) JeevanRedBg else JeevanBrandGreenBg
-    val bannerBorder = if (isAnyCritical) JeevanRedBorder else JeevanBrandGreenBorder
-    val bannerIconTint = if (isAnyCritical) Color(0xFFEF4444) else JeevanBrandGreen
-    val bannerIconBoxBg = if (isAnyCritical) Color(0xFF45181C) else Color(0xFF0F382A)
+    val bannerBg = if (isAnyCritical) Color(0xFFFFF4F4) else MintLight
+    val bannerBorder = if (isAnyCritical) Color(0xFFFFD5D5) else BorderSubtle
+    val bannerIconTint = if (isAnyCritical) EmergencyRed else MintDeep
+    val bannerIconBoxBg = if (isAnyCritical) Color(0xFFFFE5E5) else SurfaceWhite
 
     val (bannerTitle, bannerSubtitle) = when {
         isWaterCritical -> "CONSERVE WATER" to "Drinking water is critical (${waterDaysStr} remaining). Ration strictly."
@@ -110,7 +115,7 @@ fun SmartPredictionsView(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(JeevanBg)
+            .background(AppBackground)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
@@ -127,7 +132,7 @@ fun SmartPredictionsView(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color.White
+                        tint = TextPrimary
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -136,13 +141,13 @@ fun SmartPredictionsView(
             Column {
                 Text(
                     text = "Projections & Analysis",
-                    color = Color.White,
+                    color = TextPrimary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Calculated from current inventory and household demand.",
-                    color = JeevanTextMuted,
+                    color = TextSecondary,
                     fontSize = 12.sp
                 )
             }
@@ -182,13 +187,13 @@ fun SmartPredictionsView(
                         text = bannerTitle,
                         color = bannerIconTint,
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.ExtraBold,
+                        fontWeight = FontWeight.Bold,
                         letterSpacing = 0.5.sp
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = bannerSubtitle,
-                        color = if (isAnyCritical) Color(0xFFFCA5A5) else Color(0xFFA7F3D0),
+                        color = if (isAnyCritical) Color(0xFF6B1D1D) else TextSecondary,
                         fontSize = 12.sp,
                         lineHeight = 16.sp
                     )
@@ -253,8 +258,8 @@ fun SmartPredictionsView(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(JeevanCard)
-                .border(1.dp, JeevanCardBorder, RoundedCornerShape(16.dp))
+                .background(SurfaceWhite)
+                .border(1.dp, BorderSubtle, RoundedCornerShape(16.dp))
                 .padding(16.dp)
         ) {
             Column {
@@ -262,13 +267,13 @@ fun SmartPredictionsView(
                     Icon(
                         imageVector = Icons.Default.Lightbulb,
                         contentDescription = "Key Insights",
-                        tint = Color(0xFFFBBF24),
+                        tint = Color(0xFFD97706),
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Key Insights & Directives",
-                        color = Color.White,
+                        color = TextPrimary,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -317,10 +322,10 @@ fun SmartPredictionsView(
                         modifier = Modifier.padding(vertical = 4.dp),
                         verticalAlignment = Alignment.Top
                     ) {
-                        Text("• ", color = JeevanTextMuted, fontSize = 14.sp)
+                        Text("• ", color = MintPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         Text(
                             text = insight,
-                            color = Color(0xFFE2E8F0),
+                            color = TextPrimary,
                             fontSize = 13.sp,
                             lineHeight = 18.sp
                         )
@@ -344,8 +349,8 @@ private fun PredictionStatTile(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
-            .background(JeevanCard)
-            .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
             .padding(14.dp)
     ) {
         Column {
@@ -358,14 +363,14 @@ private fun PredictionStatTile(
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = value,
-                color = Color.White,
+                color = TextPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = label,
-                color = JeevanTextMuted,
+                color = TextSecondary,
                 fontSize = 11.sp
             )
         }

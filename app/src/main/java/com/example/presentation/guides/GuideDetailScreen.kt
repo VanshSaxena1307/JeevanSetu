@@ -39,11 +39,14 @@ import androidx.compose.ui.unit.sp
 import com.example.domain.model.DisasterGuide
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
 @Composable
@@ -53,6 +56,7 @@ fun GuideDetailScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = guide.title.uppercase(),
@@ -74,8 +78,8 @@ fun GuideDetailScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = EmergencyRed.copy(alpha = 0.15f)),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, EmergencyRed)
+                    colors = CardDefaults.cardColors(containerColor = EmergencyRed.copy(alpha = 0.08f)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, EmergencyRed.copy(alpha = 0.4f))
                 ) {
                     Row(
                         modifier = Modifier.padding(14.dp),
@@ -90,7 +94,7 @@ fun GuideDetailScreen(
                             )
                             Text(
                                 text = guide.highRiskThreshold,
-                                style = MaterialTheme.typography.bodySmall.copy(color = Color.White, lineHeight = 18.sp)
+                                style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary, lineHeight = 18.sp)
                             )
                         }
                     }
@@ -102,11 +106,12 @@ fun GuideDetailScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Text(
                         text = guide.summary,
-                        style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp),
+                        style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp, color = TextPrimary),
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -150,7 +155,7 @@ fun GuideDetailScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.2.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -181,21 +186,21 @@ fun PhaseCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, phaseColor.copy(alpha = 0.5f))
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, phaseColor.copy(alpha = 0.35f))
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
-                        .background(phaseColor.copy(alpha = 0.2f))
+                        .background(phaseColor.copy(alpha = 0.12f))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(phaseName, color = phaseColor, fontWeight = FontWeight.Black, fontSize = 11.sp)
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text(title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary))
             }
 
             steps.forEachIndexed { idx, step ->
@@ -206,7 +211,7 @@ fun PhaseCard(
                     )
                     Text(
                         text = step,
-                        style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp, color = Color.White)
+                        style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 20.sp, color = TextPrimary)
                     )
                 }
             }
@@ -221,8 +226,8 @@ fun DosAndDontsCard(dos: List<String>, donts: List<String>) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = SafetyGreen.copy(alpha = 0.1f)),
-            border = androidx.compose.foundation.BorderStroke(1.dp, SafetyGreen.copy(alpha = 0.4f))
+            colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+            border = androidx.compose.foundation.BorderStroke(1.dp, SafetyGreen.copy(alpha = 0.35f))
         ) {
             Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -231,7 +236,7 @@ fun DosAndDontsCard(dos: List<String>, donts: List<String>) {
                     Text("MANDATORY DO'S", fontWeight = FontWeight.Bold, color = SafetyGreen)
                 }
                 dos.forEach { d ->
-                    Text("✓ $d", style = MaterialTheme.typography.bodySmall.copy(color = Color.White, lineHeight = 18.sp))
+                    Text("✓ $d", style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary, lineHeight = 18.sp))
                 }
             }
         }
@@ -240,8 +245,8 @@ fun DosAndDontsCard(dos: List<String>, donts: List<String>) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = EmergencyRed.copy(alpha = 0.1f)),
-            border = androidx.compose.foundation.BorderStroke(1.dp, EmergencyRed.copy(alpha = 0.4f))
+            colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+            border = androidx.compose.foundation.BorderStroke(1.dp, EmergencyRed.copy(alpha = 0.35f))
         ) {
             Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -250,7 +255,7 @@ fun DosAndDontsCard(dos: List<String>, donts: List<String>) {
                     Text("STRICT DON'TS (FATAL MISTAKES)", fontWeight = FontWeight.Bold, color = EmergencyRed)
                 }
                 donts.forEach { d ->
-                    Text("✗ $d", style = MaterialTheme.typography.bodySmall.copy(color = Color.White, lineHeight = 18.sp))
+                    Text("✗ $d", style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary, lineHeight = 18.sp))
                 }
             }
         }

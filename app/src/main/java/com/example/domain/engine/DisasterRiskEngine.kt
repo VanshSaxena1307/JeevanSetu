@@ -203,7 +203,7 @@ class DisasterRiskEngine {
             answers.isSoilOrDebrisMoving -> {
                 if (answers.routeStatus == RouteStatus.DANGEROUS && !answers.isSafeExitAvailable) {
                     evacuationAction = EvacuationAction.IMMEDIATE_DANGER
-                    headline = "CRITICAL: Immediate Danger — Primary Exits Obstructed"
+                    headline = "CRITICAL: Immediate Danger: Primary Exits Obstructed"
                     recommendation = "You are in an immediate life-threatening situation. Primary exits are compromised. Seek the safest alternate boundary, stay close to the floor below smoke, signal emergency rescue (flashlights, loud whistles, bright fabric), and prepare to evacuate through windows or emergency apertures only if safer than remaining."
                 } else {
                     evacuationAction = EvacuationAction.EVACUATE_IF_SAFE
@@ -217,7 +217,7 @@ class DisasterRiskEngine {
             (answers.isWaterRising || answers.waterLevelInches > 12) -> {
                 if (answers.routeStatus == RouteStatus.FLOODED || answers.routeStatus == RouteStatus.DANGEROUS) {
                     evacuationAction = EvacuationAction.SHELTER_IN_PLACE
-                    headline = "HIGH RISK: Shelter at Highest Stable Level — Do Not Enter Floodwater"
+                    headline = "HIGH RISK: Shelter at Highest Stable Level. Do Not Enter Floodwater"
                     recommendation = "Outside routes are flooded or hazardous. Moving into fast-flowing water is one of the highest causes of disaster fatalities (just 6 inches of moving water can knock down an adult). Move vertically to the highest stable floor or roof. Signal for emergency rescue. Do NOT attempt to traverse submerged roads."
                     evacuationCautions.add("Never drive or walk into moving floodwater ('Turn Around, Don't Drown').")
                 } else {
@@ -231,7 +231,7 @@ class DisasterRiskEngine {
             finalScore >= 51 -> {
                 if (answers.routeStatus == RouteStatus.DANGEROUS || answers.routeStatus == RouteStatus.FLOODED) {
                     evacuationAction = EvacuationAction.SHELTER_IN_PLACE
-                    headline = "ELEVATED RISK: Danger on Outside Routes — Secure Safe In-Place Position"
+                    headline = "ELEVATED RISK: Danger on Outside Routes. Secure Safe In-Place Position"
                     recommendation = "Current conditions indicate significant danger, but external evacuation routes are currently hazardous. Remaining inside a reinforced part of your shelter is currently safer than exposing yourself to open hazards. Continue monitoring and signal if conditions deteriorate."
                 } else {
                     evacuationAction = EvacuationAction.EVACUATE_IF_SAFE

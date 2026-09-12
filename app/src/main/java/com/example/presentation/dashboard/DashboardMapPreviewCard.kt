@@ -50,6 +50,14 @@ import androidx.compose.ui.unit.sp
 import com.example.domain.model.AppLanguage
 import com.example.domain.model.AppStrings
 import com.example.domain.model.LocalizationData
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.utils.DeviceLocation
 
 @Composable
@@ -78,8 +86,8 @@ fun DashboardMapPreviewCard(
             .testTag("dashboard_map_preview")
             .clickable(onClick = onClickMap),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F5F9)),
-        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = BorderStroke(1.dp, BorderSubtle),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -89,7 +97,7 @@ fun DashboardMapPreviewCard(
                 val h = size.height
 
                 // Subtle tactical gridlines
-                val gridColor = Color(0xFFE2E8F0)
+                val gridColor = BorderSubtle
                 for (x in 0..w.toInt() step 60) {
                     drawLine(gridColor, Offset(x.toFloat(), 0f), Offset(x.toFloat(), h), strokeWidth = 1f)
                 }
@@ -98,7 +106,7 @@ fun DashboardMapPreviewCard(
                 }
 
                 // Topographical contour lines
-                val contourColor = Color(0xFFCBD5E1)
+                val contourColor = MintLight
                 val path1 = Path().apply {
                     moveTo(0f, h * 0.7f)
                     cubicTo(w * 0.25f, h * 0.45f, w * 0.45f, h * 0.85f, w * 0.75f, h * 0.5f)
@@ -126,7 +134,7 @@ fun DashboardMapPreviewCard(
                     lineTo(w, 0f)
                     close()
                 }
-                drawPath(coastPath, Color(0xFFE0F2FE).copy(alpha = 0.6f))
+                drawPath(coastPath, MintLight.copy(alpha = 0.6f))
 
                 // Radar ping ring around center marker
                 val centerPt = Offset(w * 0.48f, h * 0.52f)
@@ -149,7 +157,7 @@ fun DashboardMapPreviewCard(
                     text = strings.sectorName,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF94A3B8),
+                    color = TextSecondary,
                     letterSpacing = 1.sp
                 )
             }
@@ -158,8 +166,8 @@ fun DashboardMapPreviewCard(
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
-                        .background(Color.White)
-                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(20.dp))
+                        .background(SurfaceWhite)
+                        .border(1.dp, BorderSubtle, RoundedCornerShape(20.dp))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -167,14 +175,14 @@ fun DashboardMapPreviewCard(
                         modifier = Modifier
                             .size(7.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF10B981))
+                            .background(MintPrimary)
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = strings.offlineBadge,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0F172A)
+                        color = TextPrimary
                     )
                 }
             }
@@ -210,8 +218,8 @@ fun DashboardMapPreviewCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .background(Color.White.copy(alpha = 0.95f))
-                    .border(1.dp, Color(0xFFE2E8F0))
+                    .background(SurfaceWhite.copy(alpha = 0.95f))
+                    .border(1.dp, BorderSubtle)
                     .padding(horizontal = 14.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -223,14 +231,14 @@ fun DashboardMapPreviewCard(
                     Icon(
                         imageVector = Icons.Default.Map,
                         contentDescription = null,
-                        tint = Color(0xFF0284C7),
+                        tint = MintPrimary,
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = strings.tacticalVectorLayer,
                         fontSize = 11.sp,
-                        color = Color(0xFF475569),
+                        color = TextSecondary,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1
                     )
@@ -242,13 +250,13 @@ fun DashboardMapPreviewCard(
                     Text(
                         text = strings.openMap,
                         fontSize = 11.sp,
-                        color = Color(0xFF0284C7),
+                        color = MintPrimary,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = null,
-                        tint = Color(0xFF0284C7),
+                        tint = MintPrimary,
                         modifier = Modifier.size(14.dp)
                     )
                 }

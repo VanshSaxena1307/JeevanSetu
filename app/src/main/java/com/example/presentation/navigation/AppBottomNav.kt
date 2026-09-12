@@ -14,10 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInbox
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -29,15 +28,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.JeevanBrandGreen
-import com.example.ui.theme.JeevanNavBg
-import com.example.ui.theme.JeevanTextMuted
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextSecondary
 
 enum class MainTab(
     val title: String,
@@ -60,10 +60,10 @@ fun JeevanSetuBottomNav(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(JeevanNavBg)
+            .background(SurfaceWhite)
             .border(
-                width = 1.dp,
-                color = Color(0xFF1B2836)
+                width = 0.5.dp,
+                color = BorderSubtle
             )
             .navigationBarsPadding()
             .height(64.dp)
@@ -77,7 +77,7 @@ fun JeevanSetuBottomNav(
         ) {
             MainTab.entries.forEach { tab ->
                 val isSelected = tab == selectedTab
-                val color = if (isSelected) JeevanBrandGreen else JeevanTextMuted
+                val tintColor = if (isSelected) MintDeep else TextSecondary
 
                 Column(
                     modifier = Modifier
@@ -91,18 +91,26 @@ fun JeevanSetuBottomNav(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = tab.icon,
-                        contentDescription = tab.title,
-                        tint = color,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Spacer(modifier = Modifier.height(3.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (isSelected) MintLight else androidx.compose.ui.graphics.Color.Transparent)
+                            .padding(horizontal = 14.dp, vertical = 3.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = tab.icon,
+                            contentDescription = tab.title,
+                            tint = tintColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = tab.title,
-                        color = color,
+                        color = tintColor,
                         fontSize = 11.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     )
                 }
             }

@@ -2,7 +2,6 @@ package com.example.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,10 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.SignalCellularAlt
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.filled.Wifi
-import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,12 +41,31 @@ import androidx.compose.ui.unit.sp
 import com.example.domain.model.EvacuationAction
 import com.example.domain.model.ResourceStatus
 import com.example.domain.model.RiskLevel
-import com.example.ui.theme.CautionAmber
-import com.example.ui.theme.EmergencyRed
-import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.MintVeryLight
+import com.example.ui.theme.StatusCritical
+import com.example.ui.theme.StatusCriticalBg
+import com.example.ui.theme.StatusCriticalBorder
+import com.example.ui.theme.StatusDanger
+import com.example.ui.theme.StatusDangerBg
+import com.example.ui.theme.StatusDangerBorder
+import com.example.ui.theme.StatusElevated
+import com.example.ui.theme.StatusElevatedBg
+import com.example.ui.theme.StatusElevatedBorder
+import com.example.ui.theme.StatusInfo
+import com.example.ui.theme.StatusInfoBg
+import com.example.ui.theme.StatusInfoBorder
+import com.example.ui.theme.StatusSuccess
+import com.example.ui.theme.StatusSuccessBg
+import com.example.ui.theme.StatusSuccessBorder
+import com.example.ui.theme.StatusWarning
+import com.example.ui.theme.StatusWarningBg
+import com.example.ui.theme.StatusWarningBorder
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,25 +83,27 @@ fun EmergencyTopBar(
                     text = title,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.5.sp
+                        letterSpacing = 0.3.sp,
+                        color = TextPrimary
                     )
                 )
+                Spacer(modifier = Modifier.height(2.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(8.dp)
+                            .size(7.dp)
                             .clip(CircleShape)
-                            .background(if (isOnline) SafetyGreen else CautionAmber)
+                            .background(if (isOnline) StatusSuccess else StatusWarning)
                     )
                     Text(
-                        text = if (isOnline) "ONLINE" else "OFFLINE MODE ACTIVE",
+                        text = if (isOnline) "Online" else "Offline Mode",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = if (isOnline) SafetyGreen else CautionAmber
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = if (isOnline) StatusSuccess else StatusWarning
                         )
                     )
                 }
@@ -100,7 +117,8 @@ fun EmergencyTopBar(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = "Back",
+                        tint = TextPrimary
                     )
                 }
             }
@@ -114,29 +132,34 @@ fun EmergencyTopBar(
                     Icon(
                         imageVector = if (batterySaverActive) Icons.Default.Bolt else Icons.Default.BatteryChargingFull,
                         contentDescription = "Battery Saver",
-                        tint = if (batterySaverActive) CautionAmber else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (batterySaverActive) StatusWarning else TextSecondary
                     )
                 }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
-        )
+            containerColor = SurfaceWhite,
+            titleContentColor = TextPrimary
+        ),
+        modifier = Modifier.border(width = 0.5.dp, color = BorderSubtle)
     )
 }
 
 @Composable
 fun RiskBadge(level: RiskLevel) {
-    val bgColor = Color(level.hexColor).copy(alpha = 0.15f)
-    val textColor = Color(level.hexColor)
+    val (bgColor, textColor, borderColor) = when (level) {
+        RiskLevel.LOW -> Triple(StatusSuccessBg, StatusSuccess, StatusSuccessBorder)
+        RiskLevel.MODERATE -> Triple(StatusWarningBg, StatusWarning, StatusWarningBorder)
+        RiskLevel.HIGH -> Triple(StatusDangerBg, StatusDanger, StatusDangerBorder)
+        RiskLevel.CRITICAL -> Triple(StatusCriticalBg, StatusCritical, StatusCriticalBorder)
+    }
 
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .background(bgColor)
-            .border(1.dp, textColor.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
+            .padding(horizontal = 10.dp, vertical = 4.dp)
     ) {
         Text(
             text = level.badgeText,
@@ -148,15 +171,21 @@ fun RiskBadge(level: RiskLevel) {
 
 @Composable
 fun EvacuationActionCard(action: EvacuationAction) {
-    val color = Color(action.hexColor)
+    val (bgColor, accentColor, borderColor) = when (action) {
+        EvacuationAction.SHELTER_IN_PLACE -> Triple(StatusSuccessBg, StatusSuccess, StatusSuccessBorder)
+        EvacuationAction.PREPARE_TO_EVACUATE -> Triple(StatusWarningBg, StatusWarning, StatusWarningBorder)
+        EvacuationAction.EVACUATE_IF_SAFE -> Triple(StatusElevatedBg, StatusElevated, StatusElevatedBorder)
+        EvacuationAction.IMMEDIATE_DANGER -> Triple(StatusCriticalBg, StatusCritical, StatusCriticalBorder)
+    }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("evacuation_action_card"),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.15f)),
-        border = androidx.compose.foundation.BorderStroke(1.5.dp, color)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = bgColor),
+        border = androidx.compose.foundation.BorderStroke(1.dp, borderColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
@@ -166,16 +195,16 @@ fun EvacuationActionCard(action: EvacuationAction) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(42.dp)
                     .clip(CircleShape)
-                    .background(color),
+                    .background(accentColor),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Warning,
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(22.dp)
                 )
             }
             Spacer(modifier = Modifier.width(14.dp))
@@ -183,16 +212,17 @@ fun EvacuationActionCard(action: EvacuationAction) {
                 Text(
                     text = "ACTION DIRECTIVE",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        letterSpacing = 1.sp,
+                        letterSpacing = 0.8.sp,
                         fontWeight = FontWeight.Bold,
-                        color = color
+                        color = accentColor
                     )
                 )
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = action.title,
                     style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Black,
-                        color = color
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
                     )
                 )
             }
@@ -202,17 +232,22 @@ fun EvacuationActionCard(action: EvacuationAction) {
 
 @Composable
 fun ResourceStatusPill(status: ResourceStatus, label: String) {
-    val color = Color(status.hexColor)
+    val (bgColor, textColor, borderColor) = when (status) {
+        ResourceStatus.SUFFICIENT -> Triple(StatusSuccessBg, StatusSuccess, StatusSuccessBorder)
+        ResourceStatus.LIMITED -> Triple(StatusWarningBg, StatusWarning, StatusWarningBorder)
+        ResourceStatus.CRITICAL -> Triple(StatusDangerBg, StatusDanger, StatusDangerBorder)
+    }
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(6.dp))
-            .background(color.copy(alpha = 0.15f))
-            .border(1.dp, color.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
+            .background(bgColor)
+            .border(1.dp, borderColor, RoundedCornerShape(6.dp))
             .padding(horizontal = 8.dp, vertical = 3.dp)
     ) {
         Text(
             text = "$label: ${status.label}",
-            color = color,
+            color = textColor,
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold)
         )
     }
@@ -224,27 +259,28 @@ fun SafetyDisclaimerCard(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .testTag("safety_disclaimer_card"),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800.copy(alpha = 0.7f)),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MintVeryLight),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.Top
         ) {
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = null,
-                tint = CautionAmber,
+                tint = MintDeep,
                 modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "Decision-Support Notice: This is guidance based on user input and local data. It does not replace official emergency authorities. Always follow official evacuation orders when available.",
+                text = "Decision Support Notice: This is guidance based on user input and local data. It does not replace official emergency authorities. Always follow official evacuation orders when available.",
                 style = MaterialTheme.typography.bodySmall.copy(
-                    fontSize = 11.sp,
-                    lineHeight = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    color = TextSecondary
                 )
             )
         }

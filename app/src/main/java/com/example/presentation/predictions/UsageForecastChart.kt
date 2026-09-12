@@ -33,13 +33,16 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.JeevanBatteryAmber
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
 import com.example.ui.theme.JeevanFoodYellow
 import com.example.ui.theme.JeevanFuelOrange
-import com.example.ui.theme.JeevanTextMuted
 import com.example.ui.theme.JeevanWaterBlue
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun UsageForecastChartCard(
@@ -58,8 +61,8 @@ fun UsageForecastChartCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(JeevanCard)
-            .border(1.dp, JeevanCardBorder, RoundedCornerShape(16.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(16.dp))
             .padding(16.dp)
     ) {
         Column {
@@ -71,7 +74,7 @@ fun UsageForecastChartCard(
             ) {
                 Text(
                     text = "Usage Forecast",
-                    color = Color.White,
+                    color = TextPrimary,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -79,13 +82,13 @@ fun UsageForecastChartCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFF1B2735))
-                        .border(1.dp, Color(0xFF283A4E), RoundedCornerShape(8.dp))
+                        .background(MintLight)
+                        .border(1.dp, BorderSubtle, RoundedCornerShape(8.dp))
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "Next 7 days ▾",
-                        color = Color(0xFFCBD5E1),
+                        color = MintDeep,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -123,19 +126,19 @@ fun UsageForecastChartCard(
                     )
 
                     drawLine(
-                        color = Color(0xFF1E2E3E),
+                        color = BorderSubtle,
                         start = Offset(leftPadding, gridY100),
                         end = Offset(w - rightPadding, gridY100),
                         strokeWidth = 1.dp.toPx()
                     )
                     drawLine(
-                        color = Color(0xFF1E2E3E),
+                        color = BorderSubtle,
                         start = Offset(leftPadding, gridY50),
                         end = Offset(w - rightPadding, gridY50),
                         strokeWidth = 1.dp.toPx()
                     )
                     drawLine(
-                        color = Color(0xFF2A3D52),
+                        color = BorderSubtle,
                         start = Offset(leftPadding, gridY0),
                         end = Offset(w - rightPadding, gridY0),
                         strokeWidth = 1.dp.toPx()
@@ -198,11 +201,11 @@ fun UsageForecastChartCard(
                         .padding(bottom = 16.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("100%", color = JeevanTextMuted, fontSize = 9.sp)
+                    Text("100%", color = TextSecondary, fontSize = 9.sp)
                     Spacer(modifier = Modifier.height(48.dp))
-                    Text("50%", color = JeevanTextMuted, fontSize = 9.sp)
+                    Text("50%", color = TextSecondary, fontSize = 9.sp)
                     Spacer(modifier = Modifier.height(48.dp))
-                    Text("0%", color = JeevanTextMuted, fontSize = 9.sp)
+                    Text("0%", color = TextSecondary, fontSize = 9.sp)
                 }
 
                 // Critical pill badge over the critical line
@@ -233,7 +236,7 @@ fun UsageForecastChartCard(
                     listOf("Now", "1d", "2d", "3d", "5d", "7d").forEach { label ->
                         Text(
                             text = label,
-                            color = JeevanTextMuted,
+                            color = TextSecondary,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -274,7 +277,7 @@ fun UsageForecastChartCard(
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(
                             text = name,
-                            color = if (isEnabled) Color.White else JeevanTextMuted,
+                            color = if (isEnabled) TextPrimary else TextSecondary,
                             fontSize = 11.sp,
                             fontWeight = if (isEnabled) FontWeight.Medium else FontWeight.Normal
                         )

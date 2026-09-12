@@ -1,5 +1,6 @@
 package com.example.presentation.family
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Accessible
 import androidx.compose.material.icons.filled.ChildCare
 import androidx.compose.material.icons.filled.Elderly
 import androidx.compose.material.icons.filled.Group
@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,22 +47,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.ui.text.TextStyle
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
-import com.example.presentation.components.tacticalTextFieldColors
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
-import com.example.ui.theme.RescueCyan
-import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun FamilyProfileScreen(
@@ -82,6 +85,7 @@ fun FamilyProfileScreen(
     val dailyMealsNeeded = totalMembers * 3
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "FAMILY & VULNERABILITIES",
@@ -101,19 +105,28 @@ fun FamilyProfileScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, BorderSubtle),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(imageVector = Icons.Default.Group, contentDescription = null, tint = CautionAmber)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("DEPENDENT DEMOGRAPHICS ENGINE", fontWeight = FontWeight.Bold)
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(MintLight),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(imageVector = Icons.Default.Group, contentDescription = null, tint = MintDeep, modifier = Modifier.size(18.dp))
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text("DEPENDENT DEMOGRAPHICS ENGINE", fontWeight = FontWeight.Bold, color = TextPrimary, fontSize = 13.sp)
                         }
                         Text(
                             text = "Configuring your family head count directly scales all offline survival math. Children and elderly individuals also factor heavily into evacuation risk calculations.",
-                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary, lineHeight = 18.sp)
                         )
                     }
                 }
@@ -124,8 +137,9 @@ fun FamilyProfileScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, WarningOrange)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, MintPrimary.copy(alpha = 0.3f)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -135,12 +149,14 @@ fun FamilyProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("TOTAL DEPENDENTS", style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant))
-                            Text("$totalMembers People", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black, color = Color.White))
+                            Text("TOTAL DEPENDENTS", style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary, fontWeight = FontWeight.Bold))
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text("$totalMembers People", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black, color = TextPrimary))
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            Text("DAILY WATER REQUIREMENT", style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant))
-                            Text("${String.format("%.1f", dailyWaterNeededLiters)} Liters / Day", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = RescueCyan))
+                            Text("DAILY WATER REQUIREMENT", style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary, fontWeight = FontWeight.Bold))
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text("${String.format("%.1f", dailyWaterNeededLiters)} Liters / Day", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = MintDeep))
                         }
                     }
                 }
@@ -152,7 +168,7 @@ fun FamilyProfileScreen(
                     label = "Adults (18 - 65 yrs)",
                     count = adults,
                     icon = Icons.Default.Person,
-                    color = SafetyGreen,
+                    color = MintPrimary,
                     onIncrement = { adults++ },
                     onDecrement = { if (adults > 1) adults-- }
                 )
@@ -163,7 +179,7 @@ fun FamilyProfileScreen(
                     label = "Children (< 18 yrs)",
                     count = children,
                     icon = Icons.Default.ChildCare,
-                    color = RescueCyan,
+                    color = Color(0xFF0284C7),
                     onIncrement = { children++ },
                     onDecrement = { if (children > 0) children-- }
                 )
@@ -195,9 +211,17 @@ fun FamilyProfileScreen(
                 OutlinedTextField(
                     value = specialNotes,
                     onValueChange = { specialNotes = it },
-                    label = { Text("Special Needs & Medical Equipment (e.g. Wheelchair, Oxygen, Insulin)", color = Color(0xFF94A3B8)) },
-                    textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
-                    colors = tacticalTextFieldColors(focusedBorderColor = WarningOrange),
+                    label = { Text("Special Needs & Medical Equipment (e.g. Wheelchair, Oxygen, Insulin)") },
+                    textStyle = TextStyle(color = TextPrimary, fontSize = 14.sp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedLabelColor = MintPrimary,
+                        unfocusedLabelColor = TextSecondary,
+                        cursorColor = MintPrimary
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     minLines = 3
@@ -215,9 +239,9 @@ fun FamilyProfileScreen(
                         .height(52.dp)
                         .testTag("save_family_profile_button"),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                    colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                 ) {
-                    Text("SAVE & UPDATE SURVIVAL MODELS", fontWeight = FontWeight.Bold)
+                    Text("SAVE & UPDATE SURVIVAL MODELS", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -239,9 +263,10 @@ fun MemberCountStepper(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = BorderStroke(1.dp, BorderSubtle),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
@@ -253,15 +278,15 @@ fun MemberCountStepper(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(38.dp)
                         .clip(CircleShape)
-                        .background(color.copy(alpha = 0.2f)),
+                        .background(color.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(imageVector = icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(text = label, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                Text(text = label, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold, color = TextPrimary))
             }
 
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -269,14 +294,15 @@ fun MemberCountStepper(
                     onClick = onDecrement,
                     shape = CircleShape,
                     modifier = Modifier.size(38.dp),
+                    border = BorderStroke(1.dp, BorderSubtle),
                     contentPadding = PaddingValues(0.dp)
                 ) {
-                    Text("-", fontWeight = FontWeight.Black, fontSize = 18.sp)
+                    Text("-", fontWeight = FontWeight.Black, fontSize = 18.sp, color = TextPrimary)
                 }
 
                 Text(
                     text = "$count",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black, color = TextPrimary),
                     modifier = Modifier.padding(horizontal = 6.dp)
                 )
 
@@ -287,7 +313,7 @@ fun MemberCountStepper(
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = color)
                 ) {
-                    Text("+", fontWeight = FontWeight.Black, fontSize = 18.sp)
+                    Text("+", fontWeight = FontWeight.Black, fontSize = 18.sp, color = Color.White)
                 }
             }
         }

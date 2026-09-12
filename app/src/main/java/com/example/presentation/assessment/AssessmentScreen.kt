@@ -62,12 +62,17 @@ import com.example.presentation.components.EvacuationActionCard
 import com.example.presentation.components.RiskBadge
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.Slate900
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
 @Composable
@@ -84,6 +89,7 @@ fun AssessmentScreen(
     var currentStep by remember { mutableIntStateOf(if (riskResult != null) 5 else 1) }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "EMERGENCY ASSESSMENT",
@@ -102,6 +108,7 @@ fun AssessmentScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(AppBackground)
                 .testTag("assessment_screen")
         ) {
             // Step Progress Indicator
@@ -122,13 +129,13 @@ fun AssessmentScreen(
                             Text(
                                 text = "STEP 1: SELECT DISASTER TYPE",
                                 style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Black,
-                                    color = WarningOrange
+                                    fontWeight = FontWeight.Bold,
+                                    color = MintDeep
                                 )
                             )
                             Text(
                                 text = "Choose the primary ongoing hazard in your area to adapt specific danger questions.",
-                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                             )
                         }
 
@@ -152,9 +159,9 @@ fun AssessmentScreen(
                                     .height(52.dp)
                                     .testTag("assessment_step1_next_button"),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                             ) {
-                                Text("CONTINUE TO IMMEDIATE THREATS", fontWeight = FontWeight.Bold)
+                                Text("CONTINUE TO IMMEDIATE THREATS", fontWeight = FontWeight.Bold, color = Color.White)
                             }
                         }
                     }
@@ -164,13 +171,13 @@ fun AssessmentScreen(
                             Text(
                                 text = "STEP 2: IMMEDIATE ENVIRONMENT",
                                 style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Black,
-                                    color = WarningOrange
+                                    fontWeight = FontWeight.Bold,
+                                    color = MintDeep
                                 )
                             )
                             Text(
                                 text = "Questions tailored for: ${draft.disasterType.displayName}",
-                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                             )
                         }
 
@@ -196,12 +203,13 @@ fun AssessmentScreen(
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
                                         shape = RoundedCornerShape(12.dp),
-                                        colors = CardDefaults.cardColors(containerColor = Slate800)
+                                        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                                     ) {
                                         Column(modifier = Modifier.padding(16.dp)) {
                                             Text(
                                                 text = "Approximate Water Depth Outside / Ground Floor: ${draft.waterLevelInches} inches",
-                                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                                             )
                                             Text(
                                                 text = if (draft.waterLevelInches > 12) "CRITICAL: > 1 foot of water can sweep cars and adults!" else "Keep measuring water elevation.",
@@ -214,7 +222,7 @@ fun AssessmentScreen(
                                                 onValueChange = { viewModel.updateAssessmentDraft { copy(waterLevelInches = it.toInt()) } },
                                                 valueRange = 0f..48f,
                                                 steps = 8,
-                                                colors = SliderDefaults.colors(thumbColor = WarningOrange, activeTrackColor = WarningOrange)
+                                                colors = SliderDefaults.colors(thumbColor = MintPrimary, activeTrackColor = MintPrimary)
                                             )
                                         }
                                     }
@@ -338,9 +346,9 @@ fun AssessmentScreen(
                                     .height(52.dp)
                                     .testTag("assessment_step2_next_button"),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                             ) {
-                                Text("CONTINUE TO VULNERABILITIES", fontWeight = FontWeight.Bold)
+                                Text("CONTINUE TO VULNERABILITIES", fontWeight = FontWeight.Bold, color = Color.White)
                             }
                         }
                     }
@@ -350,13 +358,13 @@ fun AssessmentScreen(
                             Text(
                                 text = "STEP 3: PEOPLE & VULNERABILITIES",
                                 style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Black,
-                                    color = WarningOrange
+                                    fontWeight = FontWeight.Bold,
+                                    color = MintDeep
                                 )
                             )
                             Text(
                                 text = "Accounting for people who need special assistance during rescue or evacuation.",
-                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                             )
                         }
 
@@ -404,9 +412,9 @@ fun AssessmentScreen(
                                     .height(52.dp)
                                     .testTag("assessment_step3_next_button"),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                             ) {
-                                Text("CONTINUE TO ROUTE CONDITIONS", fontWeight = FontWeight.Bold)
+                                Text("CONTINUE TO ROUTE CONDITIONS", fontWeight = FontWeight.Bold, color = Color.White)
                             }
                         }
                     }
@@ -416,13 +424,13 @@ fun AssessmentScreen(
                             Text(
                                 text = "STEP 4: EVACUATION ROUTE STATUS",
                                 style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Black,
-                                    color = WarningOrange
+                                    fontWeight = FontWeight.Bold,
+                                    color = MintDeep
                                 )
                             )
                             Text(
                                 text = "CRITICAL: The system evaluates route hazards so you are never sent blindly into floodwaters or fire.",
-                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                             )
                         }
 
@@ -452,7 +460,7 @@ fun AssessmentScreen(
                                 shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = EmergencyRed)
                             ) {
-                                Text("CALCULATE RISK & GENERATE RECOMMENDATION", fontWeight = FontWeight.Black)
+                                Text("CALCULATE RISK & GENERATE RECOMMENDATION", fontWeight = FontWeight.Bold, color = Color.White)
                             }
                         }
                     }
@@ -476,7 +484,7 @@ fun AssessmentScreen(
                                     style = MaterialTheme.typography.labelMedium.copy(
                                         letterSpacing = 1.2.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        color = TextSecondary
                                     )
                                 )
                             }
@@ -520,15 +528,15 @@ fun AssessmentScreen(
                                         modifier = Modifier.weight(1f),
                                         shape = RoundedCornerShape(10.dp)
                                     ) {
-                                        Text("RE-EVALUATE")
+                                        Text("RE-EVALUATE", color = TextPrimary)
                                     }
                                     Button(
                                         onClick = onNavigateToMap,
                                         modifier = Modifier.weight(1f),
                                         shape = RoundedCornerShape(10.dp),
-                                        colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                                        colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                                     ) {
-                                        Text("OPEN MAP", fontWeight = FontWeight.Bold)
+                                        Text("OPEN MAP", fontWeight = FontWeight.Bold, color = Color.White)
                                     }
                                 }
                             }
@@ -549,8 +557,8 @@ fun StepIndicator(currentStep: Int, totalSteps: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Slate900)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .background(SurfaceWhite)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -558,15 +566,15 @@ fun StepIndicator(currentStep: Int, totalSteps: Int) {
             val isPassed = step < currentStep
             val isCurrent = step == currentStep
             val color = when {
-                isPassed -> SafetyGreen
-                isCurrent -> WarningOrange
-                else -> Slate700
+                isPassed -> MintPrimary
+                isCurrent -> MintDeep
+                else -> BorderSubtle
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(26.dp)
                         .clip(CircleShape)
                         .background(color),
                     contentAlignment = Alignment.Center
@@ -583,7 +591,7 @@ fun StepIndicator(currentStep: Int, totalSteps: Int) {
                             text = step.toString(),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = if (isCurrent) Color.White else Slate700
+                                color = if (isCurrent) Color.White else TextSecondary
                             )
                         )
                     }
@@ -594,7 +602,7 @@ fun StepIndicator(currentStep: Int, totalSteps: Int) {
                         modifier = Modifier
                             .width(28.dp)
                             .height(2.dp)
-                            .background(if (isPassed) SafetyGreen else Slate700)
+                            .background(if (isPassed) MintPrimary else BorderSubtle)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
@@ -616,11 +624,11 @@ fun DisasterTypeSelectCard(
             .testTag("disaster_type_${type.name.lowercase()}"),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) WarningOrange.copy(alpha = 0.15f) else Slate800
+            containerColor = if (isSelected) MintLight else SurfaceWhite
         ),
         border = androidx.compose.foundation.BorderStroke(
-            if (isSelected) 2.dp else 1.dp,
-            if (isSelected) WarningOrange else Slate700
+            if (isSelected) 1.5.dp else 1.dp,
+            if (isSelected) MintPrimary else BorderSubtle
         )
     ) {
         Row(
@@ -634,13 +642,13 @@ fun DisasterTypeSelectCard(
                     text = type.displayName,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = if (isSelected) WarningOrange else Color.White
+                        color = if (isSelected) MintDeep else TextPrimary
                     )
                 )
                 Text(
                     text = type.description,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -648,7 +656,7 @@ fun DisasterTypeSelectCard(
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = null,
-                    tint = WarningOrange,
+                    tint = MintPrimary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -669,11 +677,11 @@ fun RouteStatusCard(
             .testTag("route_status_${status.name.lowercase()}"),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) WarningOrange.copy(alpha = 0.15f) else Slate800
+            containerColor = if (isSelected) MintLight else SurfaceWhite
         ),
         border = androidx.compose.foundation.BorderStroke(
-            if (isSelected) 2.dp else 1.dp,
-            if (isSelected) WarningOrange else Slate700
+            if (isSelected) 1.5.dp else 1.dp,
+            if (isSelected) MintPrimary else BorderSubtle
         )
     ) {
         Row(
@@ -687,7 +695,7 @@ fun RouteStatusCard(
                     text = status.label,
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Bold,
-                        color = if (isSelected) WarningOrange else Color.White
+                        color = if (isSelected) MintDeep else TextPrimary
                     )
                 )
             }
@@ -695,7 +703,7 @@ fun RouteStatusCard(
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = null,
-                    tint = WarningOrange,
+                    tint = MintPrimary,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -715,8 +723,8 @@ fun ToggleCard(
             .fillMaxWidth()
             .clickable { onCheckedChange(!checked) },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (checked) WarningOrange else Slate700)
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, if (checked) MintPrimary else BorderSubtle)
     ) {
         Row(
             modifier = Modifier
@@ -727,12 +735,12 @@ fun ToggleCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -741,7 +749,8 @@ fun ToggleCard(
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
-                    checkedTrackColor = WarningOrange
+                    checkedTrackColor = MintPrimary,
+                    uncheckedTrackColor = BorderSubtle
                 )
             )
         }
@@ -753,8 +762,8 @@ fun ResultScoreCard(result: RiskResult) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(2.dp, Color(result.riskLevel.hexColor))
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.5.dp, BorderSubtle)
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -765,7 +774,7 @@ fun ResultScoreCard(result: RiskResult) {
                 style = MaterialTheme.typography.labelMedium.copy(
                     letterSpacing = 1.2.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = TextSecondary
                 )
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -784,7 +793,7 @@ fun ResultScoreCard(result: RiskResult) {
                     text = "/100",
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     ),
                     modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
                 )
@@ -801,8 +810,9 @@ fun DangerFactorRow(factor: com.example.domain.model.DangerFactor) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(Slate800)
+            .clip(RoundedCornerShape(10.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(10.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -816,13 +826,13 @@ fun DangerFactorRow(factor: com.example.domain.model.DangerFactor) {
         Column {
             Text(
                 text = factor.description,
-                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, color = TextPrimary)
             )
             Text(
                 text = "Category: ${factor.category} • Severity: ${factor.severity.label}",
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 10.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = TextSecondary
                 )
             )
         }
@@ -838,19 +848,19 @@ fun RecommendationDetailCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
                 text = headline,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
             )
             Text(
                 text = recommendation,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     lineHeight = 22.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = TextPrimary
                 )
             )
             if (safeLocationNote != null) {
@@ -859,12 +869,13 @@ fun RecommendationDetailCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFF0F172A))
+                        .background(MintLight)
+                        .border(1.dp, BorderSubtle, RoundedCornerShape(8.dp))
                         .padding(10.dp)
                 ) {
                     Text(
                         text = "📍 $safeLocationNote",
-                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, color = MintDeep)
                     )
                 }
             }
@@ -877,8 +888,8 @@ fun CautionListCard(cautions: List<String>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = EmergencyRed.copy(alpha = 0.1f)),
-        border = androidx.compose.foundation.BorderStroke(1.dp, EmergencyRed.copy(alpha = 0.5f))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF4F4)),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFD5D5))
     ) {
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -901,7 +912,7 @@ fun CautionListCard(cautions: List<String>) {
                 Text(
                     text = "• $caution",
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.White,
+                        color = Color(0xFF4A1A1A),
                         lineHeight = 18.sp
                     )
                 )

@@ -57,15 +57,18 @@ import com.example.domain.model.LocalizationData
 import androidx.compose.ui.text.TextStyle
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
-import com.example.presentation.components.tacticalTextFieldColors
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
-import com.example.ui.theme.JeevanBrandGreen
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.RescueCyan
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.Slate950
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
 @Composable
@@ -87,6 +90,7 @@ fun SettingsScreen(
     val totalOfflineMb = downloadedRegions.sumOf { it.sizeMb }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "SETTINGS & SYSTEM DIAGNOSTICS",
@@ -108,8 +112,8 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Column(
                         modifier = Modifier
@@ -121,24 +125,24 @@ fun SettingsScreen(
                                 modifier = Modifier
                                     .size(38.dp)
                                     .clip(CircleShape)
-                                    .background(RescueCyan.copy(alpha = 0.2f)),
+                                    .background(MintLight),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Translate,
                                     contentDescription = null,
-                                    tint = RescueCyan
+                                    tint = MintDeep
                                 )
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
                                 Text(
                                     text = "Disaster Alert Language",
-                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                                 )
                                 Text(
                                     text = "Audio broadcasts and advisory steps in regional tongue",
-                                    style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary)
                                 )
                             }
                         }
@@ -152,7 +156,7 @@ fun SettingsScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clip(RoundedCornerShape(8.dp))
-                                        .background(if (isSelected) Slate700 else Slate800)
+                                        .background(if (isSelected) MintLight else SurfaceWhite)
                                         .clickable { viewModel.setLanguage(language) }
                                         .padding(horizontal = 12.dp, vertical = 10.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -163,13 +167,13 @@ fun SettingsScreen(
                                             text = language.nativeName,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 14.sp,
-                                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                            color = if (isSelected) MintDeep else TextPrimary
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = "(${language.displayName})",
                                             fontSize = 12.sp,
-                                            color = if (isSelected) RescueCyan else MaterialTheme.colorScheme.onSurfaceVariant
+                                            color = if (isSelected) MintPrimary else TextSecondary
                                         )
                                     }
 
@@ -177,7 +181,7 @@ fun SettingsScreen(
                                         Icon(
                                             imageVector = Icons.Default.Check,
                                             contentDescription = "Selected",
-                                            tint = RescueCyan,
+                                            tint = MintPrimary,
                                             modifier = Modifier.size(18.dp)
                                         )
                                     }
@@ -192,8 +196,8 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Row(
                         modifier = Modifier
@@ -207,24 +211,24 @@ fun SettingsScreen(
                                 modifier = Modifier
                                     .size(38.dp)
                                     .clip(CircleShape)
-                                    .background(CautionAmber.copy(alpha = 0.2f)),
+                                    .background(CautionAmber.copy(alpha = 0.12f)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(imageVector = Icons.Default.Bolt, contentDescription = null, tint = CautionAmber)
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text("Emergency Battery Saver", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
+                                Text("Emergency Battery Saver", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = TextPrimary))
                                 Text(
                                     text = "Minimizes background polls & saves battery",
-                                    style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary)
                                 )
                             }
                         }
                         Switch(
                             checked = profile?.batterySaverMode ?: false,
                             onCheckedChange = { viewModel.toggleBatterySaver() },
-                            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = CautionAmber)
+                            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = MintPrimary)
                         )
                     }
                 }
@@ -235,20 +239,20 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(imageVector = Icons.Default.Storage, contentDescription = null, tint = RescueCyan)
+                            Icon(imageVector = Icons.Default.Storage, contentDescription = null, tint = MintDeep)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("OFFLINE LOCAL STORAGE", fontWeight = FontWeight.Bold)
+                            Text("OFFLINE LOCAL STORAGE", fontWeight = FontWeight.Bold, color = TextPrimary)
                         }
                         Text(
                             text = "Cached Map Regions: ${downloadedRegions.size} of ${mapRegions.size} (${totalOfflineMb} MB)\n" +
                                     "Database Persistence: 100% Offline via Android SQLite Room\n" +
                                     "External Servers: Zero mandatory external API calls required for survival operations.",
-                            style = MaterialTheme.typography.bodySmall.copy(lineHeight = 18.sp)
+                            style = MaterialTheme.typography.bodySmall.copy(lineHeight = 18.sp, color = TextSecondary)
                         )
                     }
                 }
@@ -259,18 +263,18 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(imageVector = Icons.Default.MyLocation, contentDescription = null, tint = WarningOrange)
+                            Icon(imageVector = Icons.Default.MyLocation, contentDescription = null, tint = MintPrimary)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("GPS & DISASTER DRILL SIMULATOR", fontWeight = FontWeight.Bold)
+                            Text("GPS & DISASTER DRILL SIMULATOR", fontWeight = FontWeight.Bold, color = TextPrimary)
                         }
                         Text(
                             text = "Simulate your device in different disaster zones to practice offline evacuation planning and compass navigation.",
-                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                         )
 
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -281,9 +285,9 @@ fun SettingsScreen(
                                     customLng = "77.2090"
                                 },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Slate700),
+                                colors = ButtonDefaults.buttonColors(containerColor = MintLight, contentColor = MintDeep),
                                 shape = RoundedCornerShape(8.dp)
-                            ) { Text("DELHI", fontSize = 11.sp) }
+                            ) { Text("DELHI", fontSize = 11.sp, fontWeight = FontWeight.Bold) }
 
                             Button(
                                 onClick = {
@@ -292,9 +296,9 @@ fun SettingsScreen(
                                     customLng = "72.8777"
                                 },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Slate700),
+                                colors = ButtonDefaults.buttonColors(containerColor = MintLight, contentColor = MintDeep),
                                 shape = RoundedCornerShape(8.dp)
-                            ) { Text("MUMBAI", fontSize = 11.sp) }
+                            ) { Text("MUMBAI", fontSize = 11.sp, fontWeight = FontWeight.Bold) }
 
                             Button(
                                 onClick = {
@@ -303,26 +307,40 @@ fun SettingsScreen(
                                     customLng = "78.2676"
                                 },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Slate700),
+                                colors = ButtonDefaults.buttonColors(containerColor = MintLight, contentColor = MintDeep),
                                 shape = RoundedCornerShape(8.dp)
-                            ) { Text("RISHIKESH", fontSize = 11.sp) }
+                            ) { Text("RISHIKESH", fontSize = 11.sp, fontWeight = FontWeight.Bold) }
                         }
 
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedTextField(
+                            androidx.compose.material3.OutlinedTextField(
                                 value = customLat,
                                 onValueChange = { customLat = it },
-                                label = { Text("Custom Lat", color = Color(0xFF94A3B8)) },
-                                textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
-                                colors = tacticalTextFieldColors(focusedBorderColor = WarningOrange),
+                                label = { Text("Custom Lat") },
+                                textStyle = TextStyle(color = TextPrimary, fontSize = 14.sp),
+                                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = SurfaceWhite,
+                                    unfocusedContainerColor = SurfaceWhite,
+                                    focusedBorderColor = MintPrimary,
+                                    unfocusedBorderColor = BorderSubtle,
+                                    focusedTextColor = TextPrimary,
+                                    unfocusedTextColor = TextPrimary
+                                ),
                                 modifier = Modifier.weight(1f)
                             )
-                            OutlinedTextField(
+                            androidx.compose.material3.OutlinedTextField(
                                 value = customLng,
                                 onValueChange = { customLng = it },
-                                label = { Text("Custom Lng", color = Color(0xFF94A3B8)) },
-                                textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
-                                colors = tacticalTextFieldColors(focusedBorderColor = WarningOrange),
+                                label = { Text("Custom Lng") },
+                                textStyle = TextStyle(color = TextPrimary, fontSize = 14.sp),
+                                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = SurfaceWhite,
+                                    unfocusedContainerColor = SurfaceWhite,
+                                    focusedBorderColor = MintPrimary,
+                                    unfocusedBorderColor = BorderSubtle,
+                                    focusedTextColor = TextPrimary,
+                                    unfocusedTextColor = TextPrimary
+                                ),
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -334,7 +352,7 @@ fun SettingsScreen(
                                 viewModel.setSimulatedLocation(lat, lng)
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = WarningOrange),
+                            colors = ButtonDefaults.buttonColors(containerColor = MintPrimary, contentColor = Color.White),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text("APPLY SIMULATED COORDINATES", fontWeight = FontWeight.Bold)
@@ -348,26 +366,26 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(imageVector = Icons.Default.Info, contentDescription = null, tint = JeevanBrandGreen)
+                            Icon(imageVector = Icons.Default.Info, contentDescription = null, tint = MintDeep)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("RECONFIGURE SURVIVAL RESERVES", fontWeight = FontWeight.Bold, color = Color.White)
+                            Text("RECONFIGURE SURVIVAL RESERVES", fontWeight = FontWeight.Bold, color = TextPrimary)
                         }
                         Text(
                             text = "Re-launch the 8-step setup wizard to update household dependents, disaster zone, water, food, fuel, or power supplies.",
-                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                         )
                         Button(
                             onClick = onNavigateToSetup,
-                            colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen),
+                            colors = ButtonDefaults.buttonColors(containerColor = MintPrimary, contentColor = Color.White),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("RE-RUN SETUP WIZARD", fontWeight = FontWeight.Bold, color = Slate950)
+                            Text("RE-RUN SETUP WIZARD", fontWeight = FontWeight.Bold)
                         }
                     }
                 }

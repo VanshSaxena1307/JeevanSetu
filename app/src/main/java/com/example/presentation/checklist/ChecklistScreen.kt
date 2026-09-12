@@ -35,9 +35,12 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,12 +62,15 @@ import com.example.data.local.db.ChecklistItemEntity
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.Slate900
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun ChecklistScreen(
@@ -94,6 +100,7 @@ fun ChecklistScreen(
     val progressFraction = if (totalCount > 0) completedCount.toFloat() / totalCount else 0f
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "EMERGENCY GO-BAG CHECKLIST",
@@ -114,8 +121,8 @@ fun ChecklistScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Slate800),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
             ) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(
@@ -125,11 +132,11 @@ fun ChecklistScreen(
                     ) {
                         Text(
                             text = "PREPAREDNESS COMPLETION",
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, color = TextSecondary)
                         )
                         Text(
                             text = "$completedCount of $totalCount items packed",
-                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Black, color = SafetyGreen)
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Black, color = MintPrimary)
                         )
                     }
                     LinearProgressIndicator(
@@ -138,8 +145,8 @@ fun ChecklistScreen(
                             .fillMaxWidth()
                             .height(8.dp)
                             .clip(RoundedCornerShape(4.dp)),
-                        color = if (progressFraction > 0.8f) SafetyGreen else WarningOrange,
-                        trackColor = Slate700
+                        color = MintPrimary,
+                        trackColor = MintLight
                     )
                 }
             }
@@ -147,14 +154,27 @@ fun ChecklistScreen(
             // Category Tab Row
             TabRow(
                 selectedTabIndex = selectedTab,
-                containerColor = Slate900,
-                contentColor = WarningOrange
+                containerColor = SurfaceWhite,
+                contentColor = MintPrimary,
+                indicator = { tabPositions ->
+                    TabRowDefaults.SecondaryIndicator(
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                        color = MintPrimary
+                    )
+                }
             ) {
                 categories.forEachIndexed { index, cat ->
                     Tab(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
-                        text = { Text(cat, fontSize = 11.sp, fontWeight = FontWeight.Bold) }
+                        text = {
+                            Text(
+                                cat,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (selectedTab == index) MintPrimary else TextSecondary
+                            )
+                        }
                     )
                 }
             }
@@ -174,12 +194,12 @@ fun ChecklistScreen(
                     ) {
                         Text(
                             text = "ITEMS (${filteredItems.size})",
-                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                         )
                         Button(
                             onClick = { showAddDialog = true },
                             shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                            colors = ButtonDefaults.buttonColors(containerColor = MintPrimary, contentColor = Color.White)
                         ) {
                             Icon(imageVector = Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
@@ -228,11 +248,11 @@ fun ChecklistItemCard(
             .testTag("checklist_item_${item.id}"),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (item.isCompleted) Slate900 else Slate800
+            containerColor = if (item.isCompleted) AppBackground else SurfaceWhite
         ),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (item.isCompleted) SafetyGreen.copy(alpha = 0.5f) else Slate700
+            if (item.isCompleted) MintPrimary.copy(alpha = 0.3f) else BorderSubtle
         )
     ) {
         Row(
@@ -245,8 +265,8 @@ fun ChecklistItemCard(
                 checked = item.isCompleted,
                 onCheckedChange = { onToggle() },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = SafetyGreen,
-                    uncheckedColor = Slate700
+                    checkedColor = MintPrimary,
+                    uncheckedColor = BorderSubtle
                 )
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -256,16 +276,16 @@ fun ChecklistItemCard(
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = if (item.isCompleted) FontWeight.Normal else FontWeight.SemiBold,
                         textDecoration = if (item.isCompleted) TextDecoration.LineThrough else TextDecoration.None,
-                        color = if (item.isCompleted) Slate700 else Color.White
+                        color = if (item.isCompleted) TextSecondary else TextPrimary
                     )
                 )
                 Text(
                     text = "${item.category} ${if (item.isEssential) "• Essential" else ""}",
-                    style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary)
                 )
             }
             IconButton(onClick = onDelete) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete", tint = Slate700, modifier = Modifier.size(18.dp))
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete", tint = TextSecondary, modifier = Modifier.size(18.dp))
             }
         }
     }
@@ -283,20 +303,39 @@ fun AddChecklistItemDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Checklist Item", fontWeight = FontWeight.Bold) },
+        containerColor = SurfaceWhite,
+        titleContentColor = TextPrimary,
+        textContentColor = TextPrimary,
+        title = { Text("Add Checklist Item", fontWeight = FontWeight.Bold, color = TextPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
                     label = { Text("Item Name (e.g. Waterproof Torch, Solar Radio)") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary
+                    )
                 )
                 OutlinedTextField(
                     value = category,
                     onValueChange = { category = it },
                     label = { Text("Category (GO-BAG, FIRST AID, HOME, DOCUMENTS)") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary
+                    )
                 )
             }
         },
@@ -307,11 +346,14 @@ fun AddChecklistItemDialog(
                         onAdd(title, category.uppercase(), isEssential)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary, contentColor = Color.White)
             ) { Text("ADD") }
         },
         dismissButton = {
-            OutlinedButton(onClick = onDismiss) { Text("CANCEL") }
+            OutlinedButton(
+                onClick = onDismiss,
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
+            ) { Text("CANCEL", color = TextSecondary) }
         }
     )
 }

@@ -61,9 +61,7 @@ import com.example.presentation.resources.SurvivalCalculatorScreen
 import com.example.presentation.settings.SettingsScreen
 import com.example.presentation.setup.FirstTimeSetupWizard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
-import com.example.ui.theme.JeevanBrandGreen
 import com.example.ui.theme.JeevanSetuTheme
-import com.example.ui.theme.Slate950
 
 class MainActivity : ComponentActivity() {
 
@@ -121,7 +119,7 @@ fun JeevanSetuApp(viewModel: JeevanSetuViewModel) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Slate950),
+                .background(com.example.ui.theme.AppBackground),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -131,19 +129,19 @@ fun JeevanSetuApp(viewModel: JeevanSetuViewModel) {
                 Icon(
                     imageVector = Icons.Default.Shield,
                     contentDescription = null,
-                    tint = JeevanBrandGreen,
+                    tint = com.example.ui.theme.MintDeep,
                     modifier = Modifier.size(56.dp)
                 )
                 Text(
                     text = "JEEVAN SETU",
                     style = MaterialTheme.typography.titleLarge.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight.Black,
-                        letterSpacing = 2.sp
+                        color = com.example.ui.theme.TextPrimary,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
                     )
                 )
                 CircularProgressIndicator(
-                    color = JeevanBrandGreen,
+                    color = com.example.ui.theme.MintPrimary,
                     modifier = Modifier.size(24.dp),
                     strokeWidth = 2.5.dp
                 )

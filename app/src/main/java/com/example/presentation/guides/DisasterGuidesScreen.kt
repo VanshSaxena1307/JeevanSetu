@@ -29,6 +29,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,12 +51,16 @@ import com.example.domain.model.DisasterType
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.RescueCyan
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
 @Composable
@@ -78,6 +83,7 @@ fun DisasterGuidesScreen(
     }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "OFFLINE DISASTER MANUALS",
@@ -98,10 +104,18 @@ fun DisasterGuidesScreen(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    placeholder = { Text("Search protocols (e.g. Floods, Earthquake, Fire)...") },
-                    leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+                    placeholder = { Text("Search protocols (e.g. Floods, Earthquake, Fire)...", color = TextSecondary) },
+                    leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = TextSecondary) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary
+                    )
                 )
             }
 
@@ -111,7 +125,7 @@ fun DisasterGuidesScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.2.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -149,8 +163,8 @@ fun DisasterGuideListItem(
             .clickable { onClick() }
             .testTag("guide_item_${guide.id}"),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
     ) {
         Row(
             modifier = Modifier
@@ -162,7 +176,7 @@ fun DisasterGuideListItem(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(color.copy(alpha = 0.2f)),
+                    .background(color.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(imageVector = Icons.Default.MenuBook, contentDescription = null, tint = color, modifier = Modifier.size(24.dp))
@@ -171,18 +185,18 @@ fun DisasterGuideListItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = guide.title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                 )
                 Text(
                     text = guide.summary,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = TextSecondary,
                         lineHeight = 16.sp
                     ),
                     maxLines = 2
                 )
             }
-            Icon(imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = Slate700)
+            Icon(imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = TextSecondary)
         }
     }
 }

@@ -82,27 +82,18 @@ import androidx.compose.ui.unit.sp
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.components.TacticalInputField
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
-import com.example.ui.theme.JeevanBatteryAmber
-import com.example.ui.theme.JeevanBg
-import com.example.ui.theme.JeevanBrandGreen
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
-import com.example.ui.theme.JeevanEquipmentCyan
-import com.example.ui.theme.JeevanFoodYellow
-import com.example.ui.theme.JeevanFuelOrange
-import com.example.ui.theme.JeevanGreenBg
-import com.example.ui.theme.JeevanGreenBorder
-import com.example.ui.theme.JeevanMedicalRed
-import com.example.ui.theme.JeevanTextMuted
-import com.example.ui.theme.JeevanWaterBlue
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.RescueCyan
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.Slate900
-import com.example.ui.theme.Slate950
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
 @Composable
@@ -211,7 +202,7 @@ fun FirstTimeSetupWizard(
         modifier = Modifier
             .fillMaxSize()
             .testTag("first_time_setup_wizard"),
-        color = Slate950
+        color = AppBackground
     ) {
         Column(
             modifier = Modifier
@@ -231,13 +222,13 @@ fun FirstTimeSetupWizard(
                             modifier = Modifier
                                 .size(32.dp)
                                 .clip(CircleShape)
-                                .background(JeevanBrandGreen.copy(alpha = 0.2f)),
+                                .background(MintLight),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Shield,
                                 contentDescription = null,
-                                tint = JeevanBrandGreen,
+                                tint = MintDeep,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -245,7 +236,7 @@ fun FirstTimeSetupWizard(
                         Text(
                             text = "JEEVAN SETU",
                             style = MaterialTheme.typography.labelLarge.copy(
-                                color = Color.White,
+                                color = TextPrimary,
                                 fontWeight = FontWeight.Black,
                                 letterSpacing = 1.5.sp
                             )
@@ -255,13 +246,13 @@ fun FirstTimeSetupWizard(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
-                            .background(Slate800)
+                            .background(MintLight)
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = "STEP $currentStep OF $totalSteps",
                             style = MaterialTheme.typography.labelMedium.copy(
-                                color = JeevanBrandGreen,
+                                color = MintDeep,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -281,9 +272,8 @@ fun FirstTimeSetupWizard(
                                 .clip(RoundedCornerShape(2.dp))
                                 .background(
                                     when {
-                                        i < currentStep -> JeevanBrandGreen
-                                        i == currentStep -> JeevanBrandGreen
-                                        else -> Slate700
+                                        i <= currentStep -> MintPrimary
+                                        else -> BorderSubtle
                                     }
                                 )
                         )
@@ -316,18 +306,18 @@ fun FirstTimeSetupWizard(
                                 title = "How many people are in your care?",
                                 subtitle = "Accurate headcount ensures drinking water and food survival quotas are properly calculated for everyone.",
                                 icon = Icons.Default.Group,
-                                accentColor = JeevanBrandGreen
+                                accentColor = MintPrimary
                             )
 
                             // Steppers
                             SetupStepperRow(
-                                label = "Adults (18–64)",
+                                label = "Adults (18-64)",
                                 count = adults,
                                 min = 1,
                                 onIncrement = { adults++ },
                                 onDecrement = { if (adults > 1) adults-- },
                                 icon = Icons.Default.Group,
-                                accentColor = JeevanBrandGreen
+                                accentColor = MintPrimary
                             )
 
                             SetupStepperRow(
@@ -368,15 +358,15 @@ fun FirstTimeSetupWizard(
                                 placeholder = "e.g. Wheelchair, dialysis, infant formula",
                                 singleLine = false,
                                 maxLines = 3,
-                                accentColor = JeevanBrandGreen
+                                accentColor = MintPrimary
                             )
 
                             // Headcount summary chip
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -387,12 +377,12 @@ fun FirstTimeSetupWizard(
                                 ) {
                                     Text(
                                         text = "Total Family Headcount:",
-                                        style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFFCBD5E1))
+                                        style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary)
                                     )
                                     Text(
                                         text = "$totalPeople Persons",
                                         style = MaterialTheme.typography.titleMedium.copy(
-                                            color = JeevanBrandGreen,
+                                            color = MintDeep,
                                             fontWeight = FontWeight.Black
                                         )
                                     )
@@ -410,7 +400,7 @@ fun FirstTimeSetupWizard(
                                 title = "Select your primary location zone",
                                 subtitle = "Configures offline disaster risk maps, high-ground shelters, and local emergency helplines.",
                                 icon = Icons.Default.LocationOn,
-                                accentColor = WarningOrange
+                                accentColor = MintDeep
                             )
 
                             regions.forEach { r ->
@@ -421,11 +411,11 @@ fun FirstTimeSetupWizard(
                                         .clickable { selectedRegion = r },
                                     shape = RoundedCornerShape(12.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = if (isSelected) WarningOrange.copy(alpha = 0.15f) else Slate900
+                                        containerColor = if (isSelected) MintLight else SurfaceWhite
                                     ),
                                     border = BorderStroke(
-                                        if (isSelected) 2.dp else 1.dp,
-                                        if (isSelected) WarningOrange else Slate700
+                                        if (isSelected) 1.5.dp else 1.dp,
+                                        if (isSelected) MintPrimary else BorderSubtle
                                     )
                                 ) {
                                     Row(
@@ -438,7 +428,7 @@ fun FirstTimeSetupWizard(
                                         Text(
                                             text = r,
                                             style = MaterialTheme.typography.bodyLarge.copy(
-                                                color = if (isSelected) Color.White else Color(0xFFE2E8F0),
+                                                color = if (isSelected) MintDeep else TextPrimary,
                                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                             )
                                         )
@@ -446,7 +436,7 @@ fun FirstTimeSetupWizard(
                                             Icon(
                                                 imageVector = Icons.Default.CheckCircle,
                                                 contentDescription = null,
-                                                tint = WarningOrange
+                                                tint = MintPrimary
                                             )
                                         }
                                     }
@@ -459,7 +449,7 @@ fun FirstTimeSetupWizard(
                                     onValueChange = { customRegionName = it },
                                     label = "Enter Your District / City",
                                     placeholder = "e.g. Pune, Maharashtra",
-                                    accentColor = WarningOrange
+                                    accentColor = MintPrimary
                                 )
                             }
                         }
@@ -474,15 +464,15 @@ fun FirstTimeSetupWizard(
                                 title = "How much drinking water do you have?",
                                 subtitle = "Survival baseline allocates 2.0 Litres per person per day for drinking and rehydration.",
                                 icon = Icons.Default.WaterDrop,
-                                accentColor = JeevanWaterBlue
+                                accentColor = RescueCyan
                             )
 
                             // Main Drinking Water Field
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(16.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.5.dp, JeevanWaterBlue.copy(alpha = 0.6f))
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(18.dp),
@@ -491,7 +481,7 @@ fun FirstTimeSetupWizard(
                                     Text(
                                         text = "DRINKING WATER CURRENTLY SEALED OR ACCESSIBLE",
                                         style = MaterialTheme.typography.labelMedium.copy(
-                                            color = JeevanWaterBlue,
+                                            color = MintDeep,
                                             fontWeight = FontWeight.Bold
                                         )
                                     )
@@ -512,7 +502,7 @@ fun FirstTimeSetupWizard(
                                             label = "Drinking Water",
                                             trailingText = "Litres",
                                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                            accentColor = JeevanWaterBlue
+                                            accentColor = RescueCyan
                                         )
                                     }
 
@@ -522,16 +512,18 @@ fun FirstTimeSetupWizard(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         listOf(0, 6, 12, 24, 48).forEach { qty ->
+                                            val isSelected = drinkingWaterLiters.toInt() == qty
                                             OutlinedButton(
                                                 onClick = { drinkingWaterInput = qty.toString() },
                                                 modifier = Modifier.weight(1f),
                                                 shape = RoundedCornerShape(8.dp),
                                                 colors = ButtonDefaults.outlinedButtonColors(
-                                                    contentColor = if (drinkingWaterLiters.toInt() == qty) JeevanWaterBlue else Color(0xFFCBD5E1)
+                                                    containerColor = if (isSelected) MintLight else Color.Transparent,
+                                                    contentColor = if (isSelected) MintDeep else TextSecondary
                                                 ),
                                                 border = BorderStroke(
                                                     1.dp,
-                                                    if (drinkingWaterLiters.toInt() == qty) JeevanWaterBlue else Slate700
+                                                    if (isSelected) MintPrimary else BorderSubtle
                                                 ),
                                                 contentPadding = PaddingValues(horizontal = 4.dp, vertical = 6.dp)
                                             ) {
@@ -558,7 +550,7 @@ fun FirstTimeSetupWizard(
                                 placeholder = "e.g. 20",
                                 trailingText = "Litres",
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                accentColor = JeevanWaterBlue
+                                accentColor = RescueCyan
                             )
 
                             // Live Survival Estimate Banner
@@ -566,11 +558,11 @@ fun FirstTimeSetupWizard(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = if (waterDaysRemaining < 1.0) EmergencyRed.copy(alpha = 0.15f) else JeevanGreenBg
+                                    containerColor = if (waterDaysRemaining < 1.0) EmergencyRed.copy(alpha = 0.08f) else MintLight
                                 ),
                                 border = BorderStroke(
                                     1.dp,
-                                    if (waterDaysRemaining < 1.0) EmergencyRed else JeevanBrandGreen
+                                    if (waterDaysRemaining < 1.0) EmergencyRed.copy(alpha = 0.3f) else MintPrimary.copy(alpha = 0.3f)
                                 )
                             ) {
                                 Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -578,14 +570,14 @@ fun FirstTimeSetupWizard(
                                         Icon(
                                             imageVector = if (waterDaysRemaining < 1.0) Icons.Default.Warning else Icons.Default.Shield,
                                             contentDescription = null,
-                                            tint = if (waterDaysRemaining < 1.0) EmergencyRed else JeevanBrandGreen,
+                                            tint = if (waterDaysRemaining < 1.0) EmergencyRed else MintDeep,
                                             modifier = Modifier.size(18.dp)
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = if (waterDaysRemaining < 1.0) "CRITICAL SHORTAGE" else "SURVIVAL FORECAST",
                                             style = MaterialTheme.typography.labelMedium.copy(
-                                                color = if (waterDaysRemaining < 1.0) EmergencyRed else JeevanBrandGreen,
+                                                color = if (waterDaysRemaining < 1.0) EmergencyRed else MintDeep,
                                                 fontWeight = FontWeight.Black
                                             )
                                         )
@@ -596,7 +588,7 @@ fun FirstTimeSetupWizard(
                                         } else {
                                             "For $totalPeople persons (${totalPeople * 2.0} L/day needed): ${String.format("%.1f", drinkingWaterLiters)} Litres will last ~${String.format("%.1f", waterDaysRemaining)} days."
                                         },
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFFF1F5F9))
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                 }
                             }
@@ -612,15 +604,15 @@ fun FirstTimeSetupWizard(
                                 title = "How much food do you have?",
                                 subtitle = "Count available meal portions. The survival engine estimates 2 meals per person per day.",
                                 icon = Icons.Default.Restaurant,
-                                accentColor = JeevanFoodYellow
+                                accentColor = CautionAmber
                             )
 
                             // Non-perishable meals
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
@@ -629,13 +621,13 @@ fun FirstTimeSetupWizard(
                                     Text(
                                         text = "NON-PERISHABLE / CANNED / DRY GOODS",
                                         style = MaterialTheme.typography.labelMedium.copy(
-                                            color = JeevanFoodYellow,
+                                            color = CautionAmber,
                                             fontWeight = FontWeight.Bold
                                         )
                                     )
                                     Text(
                                         text = "Canned beans, pulses, dry rice, biscuits, sealed bars (lasts 6+ months).",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = JeevanTextMuted)
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                     )
                                     TacticalInputField(
                                         value = nonPerishableMealsInput,
@@ -647,7 +639,7 @@ fun FirstTimeSetupWizard(
                                         label = "Estimated Meals",
                                         trailingText = "meals",
                                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                        accentColor = JeevanFoodYellow
+                                        accentColor = CautionAmber
                                     )
                                 }
                             }
@@ -656,8 +648,8 @@ fun FirstTimeSetupWizard(
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
@@ -666,13 +658,13 @@ fun FirstTimeSetupWizard(
                                     Text(
                                         text = "PERISHABLE / FRESH / COOKED FOOD",
                                         style = MaterialTheme.typography.labelMedium.copy(
-                                            color = CautionAmber,
+                                            color = WarningOrange,
                                             fontWeight = FontWeight.Bold
                                         )
                                     )
                                     Text(
                                         text = "Cooked meals, fresh produce, bread. Prioritize eating these in the first 24-48 hrs.",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = JeevanTextMuted)
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                     )
                                     TacticalInputField(
                                         value = perishableMealsInput,
@@ -684,7 +676,7 @@ fun FirstTimeSetupWizard(
                                         label = "Estimated Meals",
                                         trailingText = "meals",
                                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                        accentColor = CautionAmber
+                                        accentColor = WarningOrange
                                     )
                                 }
                             }
@@ -697,8 +689,8 @@ fun FirstTimeSetupWizard(
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.dp, Slate700),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFCBD5E1))
+                                border = BorderStroke(1.dp, BorderSubtle),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = TextSecondary)
                             ) {
                                 Text("No Food Available (0 meals)", fontWeight = FontWeight.Medium)
                             }
@@ -708,18 +700,18 @@ fun FirstTimeSetupWizard(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = if (foodDaysRemaining < 1.0) EmergencyRed.copy(alpha = 0.15f) else Slate900
+                                    containerColor = if (foodDaysRemaining < 1.0) EmergencyRed.copy(alpha = 0.08f) else MintLight
                                 ),
                                 border = BorderStroke(
                                     1.dp,
-                                    if (foodDaysRemaining < 1.0) EmergencyRed else JeevanFoodYellow
+                                    if (foodDaysRemaining < 1.0) EmergencyRed.copy(alpha = 0.3f) else MintPrimary.copy(alpha = 0.3f)
                                 )
                             ) {
                                 Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                     Text(
                                         text = "TOTAL PROVISIONS: $totalMeals MEALS",
                                         style = MaterialTheme.typography.labelMedium.copy(
-                                            color = if (foodDaysRemaining < 1.0) EmergencyRed else JeevanFoodYellow,
+                                            color = if (foodDaysRemaining < 1.0) EmergencyRed else MintDeep,
                                             fontWeight = FontWeight.Black
                                         )
                                     )
@@ -729,7 +721,7 @@ fun FirstTimeSetupWizard(
                                         } else {
                                             "For $totalPeople persons (${totalPeople * 2} meals/day needed): Provides ~${String.format("%.1f", foodDaysRemaining)} days of nutrition."
                                         },
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFFF1F5F9))
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                 }
                             }
@@ -745,15 +737,15 @@ fun FirstTimeSetupWizard(
                                 title = "What backup power do you have?",
                                 subtitle = "Maintains communication, navigation, and emergency signaling when the power grid fails.",
                                 icon = Icons.Default.ElectricBolt,
-                                accentColor = JeevanBatteryAmber
+                                accentColor = CautionAmber
                             )
 
                             // Phone battery level
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
@@ -767,14 +759,14 @@ fun FirstTimeSetupWizard(
                                         Text(
                                             text = "Phone Battery Level",
                                             style = MaterialTheme.typography.bodyMedium.copy(
-                                                color = Color.White,
+                                                color = TextPrimary,
                                                 fontWeight = FontWeight.Bold
                                             )
                                         )
                                         Text(
                                             text = "$phoneBatteryPercent%",
                                             style = MaterialTheme.typography.titleMedium.copy(
-                                                color = JeevanBatteryAmber,
+                                                color = CautionAmber,
                                                 fontWeight = FontWeight.Black
                                             )
                                         )
@@ -784,9 +776,9 @@ fun FirstTimeSetupWizard(
                                         onValueChange = { phoneBatteryPercent = it.toInt() },
                                         valueRange = 0f..100f,
                                         colors = SliderDefaults.colors(
-                                            thumbColor = JeevanBatteryAmber,
-                                            activeTrackColor = JeevanBatteryAmber,
-                                            inactiveTrackColor = Slate700
+                                            thumbColor = CautionAmber,
+                                            activeTrackColor = CautionAmber,
+                                            inactiveTrackColor = BorderSubtle
                                         )
                                     )
                                 }
@@ -796,8 +788,8 @@ fun FirstTimeSetupWizard(
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
@@ -812,23 +804,23 @@ fun FirstTimeSetupWizard(
                                             Text(
                                                 text = "External Power Bank",
                                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                                    color = Color.White,
+                                                    color = TextPrimary,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             )
                                             Text(
                                                 text = if (hasPowerBank) "Available & functional" else "No backup battery",
-                                                style = MaterialTheme.typography.bodySmall.copy(color = JeevanTextMuted)
+                                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                             )
                                         }
                                         Switch(
                                             checked = hasPowerBank,
                                             onCheckedChange = { hasPowerBank = it },
                                             colors = SwitchDefaults.colors(
-                                                checkedThumbColor = Color.White,
-                                                checkedTrackColor = JeevanBrandGreen,
-                                                uncheckedThumbColor = Slate700,
-                                                uncheckedTrackColor = Slate800
+                                                checkedThumbColor = SurfaceWhite,
+                                                checkedTrackColor = MintPrimary,
+                                                uncheckedThumbColor = TextSecondary,
+                                                uncheckedTrackColor = BorderSubtle
                                             )
                                         )
                                     }
@@ -839,16 +831,18 @@ fun FirstTimeSetupWizard(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                                         ) {
                                             listOf(5000, 10000, 20000, 30000).forEach { mah ->
+                                                val isSelected = powerBankMah == mah
                                                 OutlinedButton(
                                                     onClick = { powerBankMah = mah },
                                                     modifier = Modifier.weight(1f),
                                                     shape = RoundedCornerShape(8.dp),
                                                     border = BorderStroke(
                                                         1.dp,
-                                                        if (powerBankMah == mah) JeevanBrandGreen else Slate700
+                                                        if (isSelected) MintPrimary else BorderSubtle
                                                     ),
                                                     colors = ButtonDefaults.outlinedButtonColors(
-                                                        contentColor = if (powerBankMah == mah) JeevanBrandGreen else Color(0xFFCBD5E1)
+                                                        containerColor = if (isSelected) MintLight else Color.Transparent,
+                                                        contentColor = if (isSelected) MintDeep else TextSecondary
                                                     ),
                                                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 6.dp)
                                                 ) {
@@ -868,7 +862,7 @@ fun FirstTimeSetupWizard(
                                         ) {
                                             Text(
                                                 text = "Power Bank Charge: $powerBankPercent%",
-                                                style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFFCBD5E1))
+                                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                             )
                                         }
                                         Slider(
@@ -876,9 +870,9 @@ fun FirstTimeSetupWizard(
                                             onValueChange = { powerBankPercent = it.toInt() },
                                             valueRange = 0f..100f,
                                             colors = SliderDefaults.colors(
-                                                thumbColor = JeevanBrandGreen,
-                                                activeTrackColor = JeevanBrandGreen,
-                                                inactiveTrackColor = Slate700
+                                                thumbColor = MintPrimary,
+                                                activeTrackColor = MintPrimary,
+                                                inactiveTrackColor = BorderSubtle
                                             )
                                         )
                                     }
@@ -893,7 +887,7 @@ fun FirstTimeSetupWizard(
                                 onIncrement = { flashlightCount++ },
                                 onDecrement = { if (flashlightCount > 0) flashlightCount-- },
                                 icon = Icons.Default.FlashlightOn,
-                                accentColor = JeevanBatteryAmber
+                                accentColor = CautionAmber
                             )
 
                             SetupStepperRow(
@@ -903,7 +897,7 @@ fun FirstTimeSetupWizard(
                                 onIncrement = { spareBatteriesCount += 2 },
                                 onDecrement = { if (spareBatteriesCount >= 2) spareBatteriesCount -= 2 },
                                 icon = Icons.Default.BatteryChargingFull,
-                                accentColor = CautionAmber
+                                accentColor = WarningOrange
                             )
                         }
 
@@ -917,15 +911,15 @@ fun FirstTimeSetupWizard(
                                 title = "How much fuel do you currently have?",
                                 subtitle = "Tracks whether your family can safely evacuate to distant shelters or high ground.",
                                 icon = Icons.Default.DirectionsCar,
-                                accentColor = JeevanFuelOrange
+                                accentColor = WarningOrange
                             )
 
                             // Vehicle toggle
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
@@ -940,23 +934,23 @@ fun FirstTimeSetupWizard(
                                             Text(
                                                 text = "Evacuation Vehicle Available?",
                                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                                    color = Color.White,
+                                                    color = TextPrimary,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             )
                                             Text(
                                                 text = if (hasVehicle) "Yes, motorized transport accessible" else "No vehicle (Foot evacuation only)",
-                                                style = MaterialTheme.typography.bodySmall.copy(color = JeevanTextMuted)
+                                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                             )
                                         }
                                         Switch(
                                             checked = hasVehicle,
                                             onCheckedChange = { hasVehicle = it },
                                             colors = SwitchDefaults.colors(
-                                                checkedThumbColor = Color.White,
-                                                checkedTrackColor = JeevanFuelOrange,
-                                                uncheckedThumbColor = Slate700,
-                                                uncheckedTrackColor = Slate800
+                                                checkedThumbColor = SurfaceWhite,
+                                                checkedTrackColor = WarningOrange,
+                                                uncheckedThumbColor = TextSecondary,
+                                                uncheckedTrackColor = BorderSubtle
                                             )
                                         )
                                     }
@@ -965,7 +959,7 @@ fun FirstTimeSetupWizard(
                                         Text(
                                             text = "SELECT VEHICLE TYPE",
                                             style = MaterialTheme.typography.labelSmall.copy(
-                                                color = JeevanFuelOrange,
+                                                color = WarningOrange,
                                                 fontWeight = FontWeight.Bold
                                             )
                                         )
@@ -981,11 +975,11 @@ fun FirstTimeSetupWizard(
                                                     shape = RoundedCornerShape(8.dp),
                                                     border = BorderStroke(
                                                         1.dp,
-                                                        if (isSelected) JeevanFuelOrange else Slate700
+                                                        if (isSelected) WarningOrange else BorderSubtle
                                                     ),
                                                     colors = ButtonDefaults.outlinedButtonColors(
-                                                        containerColor = if (isSelected) JeevanFuelOrange.copy(alpha = 0.2f) else Color.Transparent,
-                                                        contentColor = if (isSelected) Color.White else Color(0xFFCBD5E1)
+                                                        containerColor = if (isSelected) WarningOrange.copy(alpha = 0.1f) else Color.Transparent,
+                                                        contentColor = if (isSelected) WarningOrange else TextSecondary
                                                     ),
                                                     contentPadding = PaddingValues(horizontal = 2.dp, vertical = 6.dp)
                                                 ) {
@@ -1008,12 +1002,12 @@ fun FirstTimeSetupWizard(
                                         ) {
                                             Text(
                                                 text = "Current Fuel Tank Level",
-                                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                                                style = MaterialTheme.typography.bodyMedium.copy(color = TextPrimary)
                                             )
                                             Text(
                                                 text = "$fuelPercent%",
                                                 style = MaterialTheme.typography.titleMedium.copy(
-                                                    color = JeevanFuelOrange,
+                                                    color = WarningOrange,
                                                     fontWeight = FontWeight.Black
                                                 )
                                             )
@@ -1023,9 +1017,9 @@ fun FirstTimeSetupWizard(
                                             onValueChange = { fuelPercent = it.toInt() },
                                             valueRange = 0f..100f,
                                             colors = SliderDefaults.colors(
-                                                thumbColor = JeevanFuelOrange,
-                                                activeTrackColor = JeevanFuelOrange,
-                                                inactiveTrackColor = Slate700
+                                                thumbColor = WarningOrange,
+                                                activeTrackColor = WarningOrange,
+                                                inactiveTrackColor = BorderSubtle
                                             )
                                         )
                                     }
@@ -1036,14 +1030,14 @@ fun FirstTimeSetupWizard(
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                     Text(
                                         text = if (hasVehicle) "ESTIMATED VEHICLE EVACUATION RANGE" else "EVACUATION STRATEGY",
                                         style = MaterialTheme.typography.labelMedium.copy(
-                                            color = JeevanFuelOrange,
+                                            color = WarningOrange,
                                             fontWeight = FontWeight.Black
                                         )
                                     )
@@ -1053,7 +1047,7 @@ fun FirstTimeSetupWizard(
                                         } else {
                                             "No motorized transport available. Jeevan Setu will prioritize walking routes and local perimeter safe shelters."
                                         },
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFFF1F5F9))
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                     )
                                 }
                             }
@@ -1069,15 +1063,15 @@ fun FirstTimeSetupWizard(
                                 title = "Do you have first-aid or critical daily medicines?",
                                 subtitle = "Identifies medical vulnerabilities and supply depletion timelines before disaster onset.",
                                 icon = Icons.Default.Medication,
-                                accentColor = JeevanMedicalRed
+                                accentColor = EmergencyRed
                             )
 
                             // First Aid Kit toggle
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1090,13 +1084,13 @@ fun FirstTimeSetupWizard(
                                         Text(
                                             text = "Basic First Aid Kit Available?",
                                             style = MaterialTheme.typography.bodyMedium.copy(
-                                                color = Color.White,
+                                                color = TextPrimary,
                                                 fontWeight = FontWeight.Bold
                                             )
                                         )
                                         Text(
                                             text = "Antiseptic, bandages, sterile gauze, burn dressing, ORS packets.",
-                                            style = MaterialTheme.typography.bodySmall.copy(color = JeevanTextMuted)
+                                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                         )
                                     }
                                     Spacer(modifier = Modifier.width(12.dp))
@@ -1104,10 +1098,10 @@ fun FirstTimeSetupWizard(
                                         checked = hasFirstAidKit,
                                         onCheckedChange = { hasFirstAidKit = it },
                                         colors = SwitchDefaults.colors(
-                                            checkedThumbColor = Color.White,
-                                            checkedTrackColor = JeevanBrandGreen,
-                                            uncheckedThumbColor = Slate700,
-                                            uncheckedTrackColor = Slate800
+                                            checkedThumbColor = SurfaceWhite,
+                                            checkedTrackColor = MintPrimary,
+                                            uncheckedThumbColor = TextSecondary,
+                                            uncheckedTrackColor = BorderSubtle
                                         )
                                     )
                                 }
@@ -1117,8 +1111,8 @@ fun FirstTimeSetupWizard(
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
@@ -1133,13 +1127,13 @@ fun FirstTimeSetupWizard(
                                             Text(
                                                 text = "Critical Daily Prescription Medicine?",
                                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                                    color = Color.White,
+                                                    color = TextPrimary,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             )
                                             Text(
                                                 text = "Insulin, hypertension, heart medication, asthma inhalers, etc.",
-                                                style = MaterialTheme.typography.bodySmall.copy(color = JeevanTextMuted)
+                                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                                             )
                                         }
                                         Spacer(modifier = Modifier.width(12.dp))
@@ -1147,10 +1141,10 @@ fun FirstTimeSetupWizard(
                                             checked = hasCriticalPrescription,
                                             onCheckedChange = { hasCriticalPrescription = it },
                                             colors = SwitchDefaults.colors(
-                                                checkedThumbColor = Color.White,
-                                                checkedTrackColor = JeevanMedicalRed,
-                                                uncheckedThumbColor = Slate700,
-                                                uncheckedTrackColor = Slate800
+                                                checkedThumbColor = SurfaceWhite,
+                                                checkedTrackColor = EmergencyRed,
+                                                uncheckedThumbColor = TextSecondary,
+                                                uncheckedTrackColor = BorderSubtle
                                             )
                                         )
                                     }
@@ -1161,7 +1155,7 @@ fun FirstTimeSetupWizard(
                                             onValueChange = { medName = it },
                                             label = "Medication Name",
                                             placeholder = "e.g. Amlodipine 5mg or Insulin",
-                                            accentColor = JeevanMedicalRed
+                                            accentColor = EmergencyRed
                                         )
 
                                         Row(
@@ -1178,7 +1172,7 @@ fun FirstTimeSetupWizard(
                                                 modifier = Modifier.weight(1f),
                                                 label = "Total Doses / Pills",
                                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                                accentColor = JeevanMedicalRed
+                                                accentColor = EmergencyRed
                                             )
 
                                             TacticalInputField(
@@ -1191,15 +1185,15 @@ fun FirstTimeSetupWizard(
                                                 modifier = Modifier.weight(1f),
                                                 label = "Doses Per Day",
                                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                                accentColor = JeevanMedicalRed
+                                                accentColor = EmergencyRed
                                             )
                                         }
 
                                         if (medName.isNotBlank() && medQty > 0) {
                                             Text(
-                                                text = "🛡️ Prescription will last for approximately $medDaysRemaining days.",
+                                                text = "Prescription will last for approximately $medDaysRemaining days.",
                                                 style = MaterialTheme.typography.bodySmall.copy(
-                                                    color = JeevanBrandGreen,
+                                                    color = MintDeep,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             )
@@ -1219,14 +1213,14 @@ fun FirstTimeSetupWizard(
                                 title = "What emergency equipment is packed?",
                                 subtitle = "Pre-configures your offline preparedness checklist so search & rescue know your survival status.",
                                 icon = Icons.Default.Build,
-                                accentColor = JeevanEquipmentCyan
+                                accentColor = MintPrimary
                             )
 
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Slate900),
-                                border = BorderStroke(1.dp, Slate700)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                border = BorderStroke(1.dp, BorderSubtle)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(12.dp),
@@ -1253,16 +1247,16 @@ fun FirstTimeSetupWizard(
                                                     gearState.value = updated
                                                 },
                                                 colors = CheckboxDefaults.colors(
-                                                    checkedColor = JeevanEquipmentCyan,
-                                                    checkmarkColor = Slate950,
-                                                    uncheckedColor = Slate700
+                                                    checkedColor = MintPrimary,
+                                                    checkmarkColor = SurfaceWhite,
+                                                    uncheckedColor = BorderSubtle
                                                 )
                                             )
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Text(
                                                 text = title,
                                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                                    color = if (isChecked) Color.White else Color(0xFF94A3B8),
+                                                    color = if (isChecked) TextPrimary else TextSecondary,
                                                     fontWeight = if (isChecked) FontWeight.Bold else FontWeight.Normal
                                                 )
                                             )
@@ -1275,40 +1269,40 @@ fun FirstTimeSetupWizard(
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(containerColor = JeevanGreenBg),
-                                border = BorderStroke(1.dp, JeevanGreenBorder)
+                                colors = CardDefaults.cardColors(containerColor = MintLight),
+                                border = BorderStroke(1.dp, MintPrimary.copy(alpha = 0.3f))
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp),
                                     verticalArrangement = Arrangement.spacedBy(6.dp)
                                 ) {
                                     Text(
-                                        text = "✓ READY FOR OFFLINE ACTIVATION",
+                                        text = "READY FOR OFFLINE ACTIVATION",
                                         style = MaterialTheme.typography.titleSmall.copy(
-                                            color = JeevanBrandGreen,
+                                            color = MintDeep,
                                             fontWeight = FontWeight.Black,
                                             letterSpacing = 1.sp
                                         )
                                     )
                                     Text(
-                                        text = "• Household: $totalPeople persons (${adults} adults, ${children} children, ${elderly} elderly)",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                        text = "Household: $totalPeople persons (${adults} adults, ${children} children, ${elderly} elderly)",
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                     Text(
-                                        text = "• Water: ${String.format("%.1f", drinkingWaterLiters)} L (~${String.format("%.1f", waterDaysRemaining)} days)",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                        text = "Water: ${String.format("%.1f", drinkingWaterLiters)} L (~${String.format("%.1f", waterDaysRemaining)} days)",
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                     Text(
-                                        text = "• Food: $totalMeals meals (~${String.format("%.1f", foodDaysRemaining)} days)",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                        text = "Food: $totalMeals meals (~${String.format("%.1f", foodDaysRemaining)} days)",
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                     Text(
-                                        text = "• Power: $phoneBatteryPercent% battery" + if (hasPowerBank) " + ${powerBankMah / 1000}k mAh power bank" else "",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                        text = "Power: $phoneBatteryPercent% battery" + if (hasPowerBank) " + ${powerBankMah / 1000}k mAh power bank" else "",
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                     Text(
-                                        text = "• Vehicle: " + if (hasVehicle) "$selectedVehicleType ($fuelPercent% fuel)" else "None (Foot)",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                        text = "Vehicle: " + if (hasVehicle) "$selectedVehicleType ($fuelPercent% fuel)" else "None (Foot)",
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                 }
                             }
@@ -1334,10 +1328,10 @@ fun FirstTimeSetupWizard(
                             .weight(1f)
                             .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.dp, Slate700),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                        border = BorderStroke(1.dp, BorderSubtle),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary)
                     ) {
-                        Text("← BACK", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("BACK", fontWeight = FontWeight.Bold, color = TextPrimary)
                     }
                 }
 
@@ -1396,21 +1390,21 @@ fun FirstTimeSetupWizard(
                         .testTag(if (currentStep < totalSteps) "onboarding_continue_button" else "onboarding_finish_button"),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (currentStep == totalSteps) JeevanBrandGreen else WarningOrange
+                        containerColor = if (currentStep == totalSteps) MintPrimary else MintDeep
                     ),
                     enabled = !isSaving
                 ) {
                     if (isSaving) {
                         CircularProgressIndicator(
-                            color = Color.White,
+                            color = SurfaceWhite,
                             modifier = Modifier.size(20.dp),
                             strokeWidth = 2.dp
                         )
                     } else {
                         Text(
-                            text = if (currentStep < totalSteps) "CONTINUE →" else "SAVE & ENTER JEEVANSETU",
+                            text = if (currentStep < totalSteps) "CONTINUE" else "SAVE & ENTER JEEVANSETU",
                             fontWeight = FontWeight.Black,
-                            color = Color.White
+                            color = SurfaceWhite
                         )
                     }
                 }
@@ -1434,7 +1428,7 @@ private fun StepHeader(
                 modifier = Modifier
                     .size(28.dp)
                     .clip(CircleShape)
-                    .background(accentColor.copy(alpha = 0.2f)),
+                    .background(accentColor.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -1459,14 +1453,14 @@ private fun StepHeader(
             text = title,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = TextPrimary
             )
         )
 
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodySmall.copy(
-                color = JeevanTextMuted,
+                color = TextSecondary,
                 lineHeight = 18.sp
             )
         )
@@ -1486,8 +1480,8 @@ private fun SetupStepperRow(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate900),
-        border = BorderStroke(1.dp, Slate700)
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = BorderStroke(1.dp, BorderSubtle)
     ) {
         Row(
             modifier = Modifier
@@ -1501,7 +1495,7 @@ private fun SetupStepperRow(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(accentColor.copy(alpha = 0.2f)),
+                        .background(accentColor.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -1515,7 +1509,7 @@ private fun SetupStepperRow(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color.White,
+                        color = TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -1530,18 +1524,18 @@ private fun SetupStepperRow(
                     shape = CircleShape,
                     modifier = Modifier.size(38.dp),
                     contentPadding = PaddingValues(0.dp),
-                    border = BorderStroke(1.dp, Slate700),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    border = BorderStroke(1.dp, BorderSubtle),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary),
                     enabled = count > min
                 ) {
-                    Text("-", fontWeight = FontWeight.Black, fontSize = 18.sp, color = if (count > min) Color.White else Slate700)
+                    Text("-", fontWeight = FontWeight.Black, fontSize = 18.sp, color = if (count > min) TextPrimary else BorderSubtle)
                 }
 
                 Text(
                     text = "$count",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = TextPrimary
                     ),
                     modifier = Modifier.padding(horizontal = 6.dp)
                 )
@@ -1553,7 +1547,7 @@ private fun SetupStepperRow(
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = accentColor)
                 ) {
-                    Text("+", fontWeight = FontWeight.Black, fontSize = 18.sp, color = Slate950)
+                    Text("+", fontWeight = FontWeight.Black, fontSize = 18.sp, color = SurfaceWhite)
                 }
             }
         }

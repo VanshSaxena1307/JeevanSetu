@@ -49,12 +49,18 @@ import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.ResourceStatusPill
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.RescueCyan
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
 @Composable
@@ -79,6 +85,7 @@ fun SurvivalCalculatorScreen(
     val criticalMedsWarning = medicines.filter { it.isCritical && it.daysRemaining <= 4 }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "SURVIVAL FORECAST & ADVISOR",
@@ -90,6 +97,7 @@ fun SurvivalCalculatorScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AppBackground)
                 .padding(innerPadding)
                 .testTag("survival_calculator_screen"),
             contentPadding = PaddingValues(16.dp),
@@ -99,8 +107,8 @@ fun SurvivalCalculatorScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, BorderSubtle)
                 ) {
                     Row(
                         modifier = Modifier
@@ -109,33 +117,34 @@ fun SurvivalCalculatorScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "ESTIMATED CONSUMPTION BASIS",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     letterSpacing = 1.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = TextSecondary
                                 )
                             )
                             Text(
                                 text = "$totalPeople Family Members",
                                 style = MaterialTheme.typography.titleLarge.copy(
-                                    fontWeight = FontWeight.Black,
-                                    color = Color.White
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
                                 )
                             )
                             Text(
                                 text = "Adults: ${userProfile?.numberOfAdults ?: 2} • Children: ${userProfile?.numberOfChildren ?: 0} • Elderly: ${userProfile?.numberOfElderly ?: 0}",
-                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                             )
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                         Button(
                             onClick = onNavigateToFamily,
-                            colors = ButtonDefaults.buttonColors(containerColor = Slate700),
+                            colors = ButtonDefaults.buttonColors(containerColor = MintLight),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("EDIT FAMILY", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Text("EDIT FAMILY", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MintDeep)
                         }
                     }
                 }
@@ -148,7 +157,7 @@ fun SurvivalCalculatorScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.2.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -202,8 +211,8 @@ fun SurvivalCalculatorScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = EmergencyRed.copy(alpha = 0.15f)),
-                        border = androidx.compose.foundation.BorderStroke(1.5.dp, EmergencyRed)
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF4F4)),
+                        border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFFFD5D5))
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -212,7 +221,7 @@ fun SurvivalCalculatorScreen(
                                 Text(
                                     text = "CRITICAL MEDICATION EXPIRY WARNING",
                                     style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Black,
+                                        fontWeight = FontWeight.Bold,
                                         color = EmergencyRed
                                     )
                                 )
@@ -221,7 +230,7 @@ fun SurvivalCalculatorScreen(
                             criticalMedsWarning.forEach { med ->
                                 Text(
                                     text = "• ${med.name}: Only ${med.daysRemaining} days of doses left! Prioritize resupply at nearest emergency medical camp.",
-                                    style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                    style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF4A1A1A))
                                 )
                             }
                         }
@@ -236,7 +245,7 @@ fun SurvivalCalculatorScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.2.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -250,7 +259,7 @@ fun SurvivalCalculatorScreen(
                         "Recycle utility water: Use wash/sponge runoff for toilet flushing or dampening cooling cloths.",
                         "Purify before ingestion: Boil for 1 full minute or add 2 drops chlorine bleach per liter."
                     ),
-                    accentColor = RescueCyan
+                    accentColor = MintDeep
                 )
             }
 
@@ -285,9 +294,9 @@ fun SurvivalCalculatorScreen(
                         .fillMaxWidth()
                         .height(48.dp),
                     shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                    colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                 ) {
-                    Text("UPDATE INVENTORY QUANTITIES", fontWeight = FontWeight.Bold)
+                    Text("UPDATE INVENTORY QUANTITIES", fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
 
@@ -310,8 +319,8 @@ fun SurvivalItemCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
@@ -324,27 +333,27 @@ fun SurvivalItemCard(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(accentColor.copy(alpha = 0.15f)),
+                            .background(accentColor.copy(alpha = 0.12f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(imageVector = icon, contentDescription = null, tint = accentColor, modifier = Modifier.size(20.dp))
                     }
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = title, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
+                    Text(text = title, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = TextPrimary))
                 }
                 ResourceStatusPill(status = status, label = "")
             }
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.Bold,
                     color = Color(status.hexColor)
                 )
             )
             Text(
                 text = details,
                 style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = TextSecondary,
                     lineHeight = 16.sp
                 )
             )
@@ -361,8 +370,8 @@ fun ConservationAdviceCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
-        border = androidx.compose.foundation.BorderStroke(1.dp, accentColor.copy(alpha = 0.4f))
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
     ) {
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -381,7 +390,7 @@ fun ConservationAdviceCard(
                 Text(
                     text = "• $tip",
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.White,
+                        color = TextPrimary,
                         lineHeight = 18.sp
                     )
                 )

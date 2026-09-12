@@ -56,14 +56,17 @@ import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.EvacuationActionCard
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
-import com.example.ui.theme.RescueCyan
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
-import com.example.ui.theme.Slate900
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun EvacuationScreen(
@@ -127,7 +130,7 @@ fun EvacuationScreen(
                     detail = "While the structure remains intact, critical survival supplies have run out. Travel calmly to the nearest community relief shelter during daylight hours."
                 } else {
                     decision = EvacuationAction.PREPARE_TO_EVACUATE
-                    headline = "PREPARE TO EVACUATE — IDENTIFY SAFE CORRIDOR"
+                    headline = "PREPARE TO EVACUATE: IDENTIFY SAFE CORRIDOR"
                     detail = "Resource shortages are imminent. Plan an evacuation journey, locate the nearest open distribution shelter, and check route accessibility."
                 }
             } else {
@@ -147,6 +150,7 @@ fun EvacuationScreen(
     }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "SHOULD I EVACUATE?",
@@ -158,6 +162,7 @@ fun EvacuationScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AppBackground)
                 .padding(innerPadding)
                 .testTag("evacuation_screen"),
             contentPadding = PaddingValues(16.dp),
@@ -167,26 +172,26 @@ fun EvacuationScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.Shield,
                                 contentDescription = null,
-                                tint = WarningOrange,
+                                tint = MintPrimary,
                                 modifier = Modifier.size(24.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "OFFLINE EVACUATION DECISION ENGINE",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black)
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                             )
                         }
                         Text(
                             text = "This system balances the DANGER OF STAYING against the DANGER OF MOVING. It will never advise stepping blindly into dangerous floodwaters.",
-                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                         )
                     }
                 }
@@ -199,7 +204,7 @@ fun EvacuationScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -229,7 +234,7 @@ fun EvacuationScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -251,7 +256,7 @@ fun EvacuationScreen(
                     style = MaterialTheme.typography.labelMedium.copy(
                         letterSpacing = 1.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -264,8 +269,8 @@ fun EvacuationScreen(
                         .fillMaxWidth()
                         .clickable { onNavigateToSafeLocations() },
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -275,13 +280,13 @@ fun EvacuationScreen(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .background(RescueCyan.copy(alpha = 0.2f)),
+                                .background(MintLight),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.NearMe,
                                 contentDescription = null,
-                                tint = RescueCyan,
+                                tint = MintDeep,
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -289,11 +294,11 @@ fun EvacuationScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = nearest?.name ?: "No Safe Location Saved",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                             )
                             Text(
                                 text = if (dist != null) "Approx. ${String.format("%.1f", dist)} km straight-line" else "Tap to add community shelters",
-                                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary)
                             )
                         }
                     }
@@ -308,9 +313,9 @@ fun EvacuationScreen(
                         .height(54.dp)
                         .testTag("analyze_evacuation_button"),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                    colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
                 ) {
-                    Text("EVALUATE EVACUATION DECISION", fontWeight = FontWeight.Black)
+                    Text("EVALUATE EVACUATION DECISION", fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
 
@@ -324,22 +329,22 @@ fun EvacuationScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(14.dp),
-                        colors = CardDefaults.cardColors(containerColor = Slate800),
-                        border = androidx.compose.foundation.BorderStroke(1.5.dp, Slate700)
+                        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                        border = androidx.compose.foundation.BorderStroke(1.5.dp, BorderSubtle)
                     ) {
                         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(
                                 text = decisionHeadline,
                                 style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Black,
-                                    color = Color.White
+                                    fontWeight = FontWeight.Bold,
+                                    color = TextPrimary
                                 )
                             )
                             Text(
                                 text = decisionDetail,
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     lineHeight = 22.sp,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = TextPrimary
                                 )
                             )
                             Spacer(modifier = Modifier.height(4.dp))
@@ -348,15 +353,15 @@ fun EvacuationScreen(
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     letterSpacing = 1.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = TextSecondary
                                 )
                             )
                             reasonsList.forEach { reason ->
                                 Row(verticalAlignment = Alignment.Top) {
-                                    Text("• ", color = WarningOrange, fontWeight = FontWeight.Bold)
+                                    Text("• ", color = MintPrimary, fontWeight = FontWeight.Bold)
                                     Text(
                                         text = reason,
-                                        style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                        style = MaterialTheme.typography.bodySmall.copy(color = TextPrimary)
                                     )
                                 }
                             }
@@ -371,11 +376,11 @@ fun EvacuationScreen(
                             .fillMaxWidth()
                             .height(48.dp),
                         shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = RescueCyan)
+                        colors = ButtonDefaults.buttonColors(containerColor = MintDeep)
                     ) {
-                        Icon(imageVector = Icons.Default.NearMe, contentDescription = null)
+                        Icon(imageVector = Icons.Default.NearMe, contentDescription = null, tint = Color.White)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("VIEW ROUTE DIRECTION ON OFFLINE MAP", fontWeight = FontWeight.Bold)
+                        Text("VIEW ROUTE DIRECTION ON OFFLINE MAP", fontWeight = FontWeight.Bold, color = Color.White)
                     }
                 }
             }
@@ -400,11 +405,11 @@ fun ThreatCheckCard(
             .clickable { onToggle() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (checked) EmergencyRed.copy(alpha = 0.15f) else Slate800
+            containerColor = if (checked) Color(0xFFFFF4F4) else SurfaceWhite
         ),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (checked) EmergencyRed else Slate700
+            if (checked) EmergencyRed else BorderSubtle
         )
     ) {
         Row(
@@ -416,13 +421,13 @@ fun ThreatCheckCard(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = if (checked) EmergencyRed else Color.White
+                        color = if (checked) EmergencyRed else TextPrimary
                     )
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 )
             }
@@ -430,7 +435,7 @@ fun ThreatCheckCard(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .border(2.dp, if (checked) EmergencyRed else Slate700, CircleShape)
+                    .border(2.dp, if (checked) EmergencyRed else BorderSubtle, CircleShape)
                     .background(if (checked) EmergencyRed else Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
@@ -458,7 +463,7 @@ fun RouteOptionCard(
         RouteStatus.PARTIALLY_BLOCKED -> CautionAmber
         RouteStatus.FLOODED -> EmergencyRed
         RouteStatus.DANGEROUS -> EmergencyRed
-        RouteStatus.UNKNOWN -> Slate700
+        RouteStatus.UNKNOWN -> BorderSubtle
     }
 
     Card(
@@ -467,11 +472,11 @@ fun RouteOptionCard(
             .clickable { onSelect() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) color.copy(alpha = 0.15f) else Slate800
+            containerColor = if (isSelected) color.copy(alpha = 0.12f) else SurfaceWhite
         ),
         border = androidx.compose.foundation.BorderStroke(
-            if (isSelected) 2.dp else 1.dp,
-            if (isSelected) color else Slate700
+            if (isSelected) 1.5.dp else 1.dp,
+            if (isSelected) color else BorderSubtle
         )
     ) {
         Row(
@@ -482,7 +487,7 @@ fun RouteOptionCard(
                 text = status.label,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.SemiBold,
-                    color = if (isSelected) color else Color.White
+                    color = if (isSelected) (if (status == RouteStatus.UNKNOWN) TextPrimary else color) else TextPrimary
                 ),
                 modifier = Modifier.weight(1f)
             )
@@ -490,7 +495,7 @@ fun RouteOptionCard(
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = null,
-                    tint = color,
+                    tint = if (status == RouteStatus.UNKNOWN) MintPrimary else color,
                     modifier = Modifier.size(20.dp)
                 )
             }

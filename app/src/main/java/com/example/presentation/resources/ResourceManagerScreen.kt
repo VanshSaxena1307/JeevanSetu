@@ -44,6 +44,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -71,18 +72,21 @@ import com.example.data.local.db.ChecklistItemEntity
 import com.example.domain.model.ResourceStatus
 import com.example.presentation.predictions.SmartPredictionsView
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.EmergencyRed
 import com.example.ui.theme.JeevanBatteryAmber
-import com.example.ui.theme.JeevanBg
-import com.example.ui.theme.JeevanBrandGreen
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
 import com.example.ui.theme.JeevanEquipmentCyan
 import com.example.ui.theme.JeevanFoodYellow
 import com.example.ui.theme.JeevanFuelOrange
 import com.example.ui.theme.JeevanMedicalRed
-import com.example.ui.theme.JeevanRedBorder
-import com.example.ui.theme.JeevanTextMuted
 import com.example.ui.theme.JeevanWaterBlue
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import java.util.Locale
 
 private enum class ActiveDialog {
@@ -114,11 +118,12 @@ fun ResourceManagerScreen(
     val fuelEstimate by viewModel.fuelEstimate.collectAsStateWithLifecycle()
 
     Scaffold(
-        containerColor = JeevanBg
+        containerColor = AppBackground
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AppBackground)
                 .padding(innerPadding)
                 .testTag("resources_screen")
         ) {
@@ -137,7 +142,7 @@ fun ResourceManagerScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.White
+                            tint = TextPrimary
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -145,7 +150,7 @@ fun ResourceManagerScreen(
 
                 Text(
                     text = "Resources",
-                    color = Color.White,
+                    color = TextPrimary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -162,10 +167,10 @@ fun ResourceManagerScreen(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
-                            .background(if (isSelected) JeevanBrandGreen else Color(0xFF131F2B))
+                            .background(if (isSelected) MintPrimary else SurfaceWhite)
                             .border(
                                 width = 1.dp,
-                                color = if (isSelected) JeevanBrandGreen else Color(0xFF1F2F40),
+                                color = if (isSelected) MintPrimary else BorderSubtle,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .clickable { selectedTab = index }
@@ -173,7 +178,7 @@ fun ResourceManagerScreen(
                     ) {
                         Text(
                             text = title,
-                            color = if (isSelected) Color.Black else Color(0xFFCBD5E1),
+                            color = if (isSelected) Color.White else TextSecondary,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                         )
@@ -214,7 +219,7 @@ fun ResourceManagerScreen(
 
                         ResourceItemCard(
                             icon = Icons.Default.WaterDrop,
-                            iconBg = Color(0xFF0F2D3D),
+                            iconBg = Color(0xFFE0F2FE),
                             iconColor = JeevanWaterBlue,
                             title = "Water",
                             subtitle = "${String.format(Locale.US, "%.1f", drinkingLiters)} L drinking • ${String.format(Locale.US, "%.1f", utilityLiters)} L utility",
@@ -233,7 +238,7 @@ fun ResourceManagerScreen(
 
                         ResourceItemCard(
                             icon = Icons.Default.Fastfood,
-                            iconBg = Color(0xFF332612),
+                            iconBg = Color(0xFFFEF3C7),
                             iconColor = JeevanFoodYellow,
                             title = "Food",
                             subtitle = if (totalMeals == 0) "0 meals available" else "$totalMeals meals ($nonPerishMeals rations, $perishMeals fresh)",
@@ -265,7 +270,7 @@ fun ResourceManagerScreen(
 
                         ResourceItemCard(
                             icon = Icons.Default.BatteryChargingFull,
-                            iconBg = Color(0xFF362111),
+                            iconBg = Color(0xFFFFFBEB),
                             iconColor = JeevanBatteryAmber,
                             title = "Battery / Power",
                             subtitle = powerSubtitle,
@@ -291,7 +296,7 @@ fun ResourceManagerScreen(
 
                         ResourceItemCard(
                             icon = Icons.Default.LocalGasStation,
-                            iconBg = Color(0xFF331E12),
+                            iconBg = Color(0xFFFFEDD5),
                             iconColor = JeevanFuelOrange,
                             title = "Fuel",
                             subtitle = fuelSubtitle,
@@ -312,7 +317,7 @@ fun ResourceManagerScreen(
 
                         ResourceItemCard(
                             icon = Icons.Default.MedicalServices,
-                            iconBg = Color(0xFF38151A),
+                            iconBg = Color(0xFFFEE2E2),
                             iconColor = JeevanMedicalRed,
                             title = "Medical Supplies",
                             subtitle = medSubtitle,
@@ -331,7 +336,7 @@ fun ResourceManagerScreen(
 
                         ResourceItemCard(
                             icon = Icons.Default.Build,
-                            iconBg = Color(0xFF132B2B),
+                            iconBg = Color(0xFFE0F2FE),
                             iconColor = JeevanEquipmentCyan,
                             title = "Equipment",
                             subtitle = equipSubtitle,
@@ -350,8 +355,8 @@ fun ResourceManagerScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(14.dp))
-                                .background(Color(0xFF121D28))
-                                .border(1.2.dp, Color(0xFF25374C), RoundedCornerShape(14.dp))
+                                .background(SurfaceWhite)
+                                .border(1.2.dp, BorderSubtle, RoundedCornerShape(14.dp))
                                 .clickable { activeDialog = ActiveDialog.ALL_SUPPLIES }
                                 .padding(vertical = 14.dp),
                             contentAlignment = Alignment.Center
@@ -360,13 +365,13 @@ fun ResourceManagerScreen(
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = MintPrimary,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "Add / Update Resources",
-                                    color = Color.White,
+                                    color = MintDeep,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -536,10 +541,10 @@ private fun UsageTabView(
     power: com.example.data.local.db.PowerResourceEntity?,
     fuel: com.example.data.local.db.FuelResourceEntity?,
     medicines: List<com.example.data.local.db.MedicineEntity>,
-    waterEstimate: com.example.domain.model.WaterEstimate,
-    foodEstimate: com.example.domain.model.FoodEstimate,
-    powerEstimate: com.example.domain.model.PowerEstimate,
-    fuelEstimate: com.example.domain.model.FuelEstimate
+    waterEstimate: com.example.domain.model.WaterSurvivalEstimate,
+    foodEstimate: com.example.domain.model.FoodSurvivalEstimate,
+    powerEstimate: com.example.domain.model.PowerSurvivalEstimate,
+    fuelEstimate: com.example.domain.model.FuelSurvivalEstimate
 ) {
     val totalPeople = (profile?.numberOfAdults ?: 1) + (profile?.numberOfChildren ?: 0) + (profile?.numberOfElderly ?: 0)
     val dailyWaterDemand = totalPeople * 2.0 // 2.0 L/person/day
@@ -564,8 +569,8 @@ private fun UsageTabView(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(JeevanCard)
-                .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
+                .background(SurfaceWhite)
+                .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
                 .padding(16.dp)
         ) {
             Column {
@@ -573,13 +578,13 @@ private fun UsageTabView(
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = null,
-                        tint = JeevanBrandGreen,
+                        tint = MintPrimary,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Household Consumption Demographics",
-                        color = Color.White,
+                        color = TextPrimary,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -589,12 +594,12 @@ private fun UsageTabView(
 
                 Text(
                     text = "Household Head Count: $totalPeople member${if (totalPeople > 1) "s" else ""} (${profile?.numberOfAdults ?: 1} Adults, ${profile?.numberOfChildren ?: 0} Children, ${profile?.numberOfElderly ?: 0} Seniors)",
-                    color = Color(0xFFE2E8F0),
+                    color = TextPrimary,
                     fontSize = 13.sp
                 )
                 Text(
-                    text = "Region: ${profile?.region ?: "General Region"} • Target Reserve: 7 Days Minimum",
-                    color = JeevanTextMuted,
+                    text = "Region: ${profile?.regionName ?: "General Region"} • Target Reserve: 7 Days Minimum",
+                    color = TextSecondary,
                     fontSize = 12.sp
                 )
             }
@@ -605,14 +610,14 @@ private fun UsageTabView(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(JeevanCard)
-                .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
+                .background(SurfaceWhite)
+                .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
                 .padding(16.dp)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     text = "Daily Consumption & Burn Rates",
-                    color = Color.White,
+                    color = TextPrimary,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -675,8 +680,8 @@ private fun UsageTabView(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(Color(0xFF101B26))
-                .border(1.dp, Color(0xFF1D2F42), RoundedCornerShape(14.dp))
+                .background(MintLight)
+                .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
                 .padding(16.dp)
         ) {
             Column {
@@ -684,21 +689,21 @@ private fun UsageTabView(
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
                         contentDescription = null,
-                        tint = JeevanBrandGreen,
+                        tint = MintPrimary,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Deterministic Survival Model Active",
-                        color = Color.White,
+                        color = MintDeep,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "Consumption rates are calculated deterministically by the survival engine from household size and standard WHO/NDMA survival quotas. Automatic historical hardware telemetry sensors will integrate in subsequent update phases.",
-                    color = JeevanTextMuted,
+                    color = TextSecondary,
                     fontSize = 11.sp,
                     lineHeight = 16.sp
                 )
@@ -725,7 +730,7 @@ private fun ConsumptionRateRow(
             modifier = Modifier
                 .size(34.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(iconColor.copy(alpha = 0.15f)),
+                .background(iconColor.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -741,9 +746,9 @@ private fun ConsumptionRateRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                color = Color.White,
+                color = TextPrimary,
                 fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = rate,
@@ -754,7 +759,7 @@ private fun ConsumptionRateRow(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = detail,
-                color = JeevanTextMuted,
+                color = TextSecondary,
                 fontSize = 11.sp,
                 lineHeight = 15.sp
             )
@@ -783,8 +788,8 @@ private fun ResourceItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(JeevanCard)
-            .border(1.dp, if (isWarning) JeevanRedBorder else JeevanCardBorder, RoundedCornerShape(14.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, if (isWarning) EmergencyRed else BorderSubtle, RoundedCornerShape(14.dp))
             .clickable { onClick() }
             .padding(14.dp)
     ) {
@@ -817,16 +822,16 @@ private fun ResourceItemCard(
                 ) {
                     Text(
                         text = title,
-                        color = Color.White,
+                        color = TextPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
                         text = daysLeft,
-                        color = if (isWarning) Color(0xFFF97316) else JeevanTextMuted,
+                        color = if (isWarning) EmergencyRed else TextSecondary,
                         fontSize = 11.sp,
-                        fontWeight = if (isWarning) FontWeight.SemiBold else FontWeight.Normal
+                        fontWeight = if (isWarning) FontWeight.Bold else FontWeight.Normal
                     )
                 }
 
@@ -834,7 +839,7 @@ private fun ResourceItemCard(
 
                 Text(
                     text = subtitle,
-                    color = JeevanTextMuted,
+                    color = TextSecondary,
                     fontSize = 11.sp
                 )
 
@@ -849,7 +854,7 @@ private fun ResourceItemCard(
                             .weight(1f)
                             .height(5.dp)
                             .clip(RoundedCornerShape(3.dp))
-                            .background(Color(0xFF1E2F40))
+                            .background(BorderSubtle)
                     ) {
                         Box(
                             modifier = Modifier
@@ -864,7 +869,7 @@ private fun ResourceItemCard(
 
                     Text(
                         text = percentLabel,
-                        color = JeevanTextMuted,
+                        color = TextSecondary,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -876,7 +881,7 @@ private fun ResourceItemCard(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null,
-                tint = Color(0xFF475E77),
+                tint = TextSecondary,
                 modifier = Modifier.size(12.dp)
             )
         }
@@ -938,11 +943,11 @@ private fun AllSuppliesUpdateDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
             Text(
                 text = "Update Supplies Inventory",
-                color = Color.White,
+                color = TextPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -1010,13 +1015,13 @@ private fun AllSuppliesUpdateDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Portable Power Bank", color = Color.White, fontSize = 13.sp)
+                    Text("Portable Power Bank", color = TextPrimary, fontSize = 13.sp)
                     Switch(
                         checked = hasPowerBank,
                         onCheckedChange = { hasPowerBank = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Black,
-                            checkedTrackColor = JeevanBrandGreen
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = MintPrimary
                         )
                     )
                 }
@@ -1052,13 +1057,13 @@ private fun AllSuppliesUpdateDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Vehicle Available", color = Color.White, fontSize = 13.sp)
+                    Text("Vehicle Available", color = TextPrimary, fontSize = 13.sp)
                     Switch(
                         checked = hasVehicle,
                         onCheckedChange = { hasVehicle = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Black,
-                            checkedTrackColor = JeevanBrandGreen
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = MintPrimary
                         )
                     )
                 }
@@ -1084,13 +1089,13 @@ private fun AllSuppliesUpdateDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("First Aid Kit Equipped", color = Color.White, fontSize = 13.sp)
+                    Text("First Aid Kit Equipped", color = TextPrimary, fontSize = 13.sp)
                     Switch(
                         checked = hasFirstAid,
                         onCheckedChange = { hasFirstAid = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Black,
-                            checkedTrackColor = JeevanBrandGreen
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = MintPrimary
                         )
                     )
                 }
@@ -1134,17 +1139,16 @@ private fun AllSuppliesUpdateDialog(
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Save Changes", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save Changes", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
-            Button(
-                onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF223447))
+            OutlinedButton(
+                onClick = onDismiss
             ) {
-                Text("Cancel", color = Color.White)
+                Text("Cancel", color = TextSecondary)
             }
         }
     )
@@ -1167,9 +1171,9 @@ private fun WaterUpdateDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
-            Text("Update Water Supplies", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("Update Water Supplies", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1189,7 +1193,7 @@ private fun WaterUpdateDialog(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(Color(0xFF1F2F40))
+                                .background(MintLight)
                                 .clickable {
                                     if (diff == null) {
                                         drinkingStr = "0.0"
@@ -1201,7 +1205,7 @@ private fun WaterUpdateDialog(
                                 }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
-                            Text(label, color = Color(0xFF93C5FD), fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text(label, color = MintDeep, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
@@ -1230,14 +1234,14 @@ private fun WaterUpdateDialog(
                         onSave(drinkingStr.toDouble(), utilityStr.toDouble())
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF223447))) {
-                Text("Cancel", color = Color.White)
+            OutlinedButton(onClick = onDismiss) {
+                Text("Cancel", color = TextSecondary)
             }
         }
     )
@@ -1257,9 +1261,9 @@ private fun FoodUpdateDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
-            Text("Update Food Provisions", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("Update Food Provisions", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1279,7 +1283,7 @@ private fun FoodUpdateDialog(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(Color(0xFF1F2F40))
+                                .background(MintLight)
                                 .clickable {
                                     if (diff == null) {
                                         nonPerishStr = "0"
@@ -1291,7 +1295,7 @@ private fun FoodUpdateDialog(
                                 }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
-                            Text(label, color = JeevanFoodYellow, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text(label, color = MintDeep, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
@@ -1320,14 +1324,14 @@ private fun FoodUpdateDialog(
                         onSave(nonPerishStr.toInt(), perishStr.toInt())
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF223447))) {
-                Text("Cancel", color = Color.White)
+            OutlinedButton(onClick = onDismiss) {
+                Text("Cancel", color = TextSecondary)
             }
         }
     )
@@ -1352,9 +1356,9 @@ private fun PowerUpdateDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
-            Text("Update Emergency Power", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("Update Emergency Power", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         },
         text = {
             Column(
@@ -1366,12 +1370,12 @@ private fun PowerUpdateDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFF1C2B3A))
+                        .background(MintLight)
                         .padding(10.dp)
                 ) {
                     Text(
                         text = "Phone Battery: ${currentPower?.phoneBatteryPercent ?: 0}% (Device Telemetry)",
-                        color = Color(0xFF93C5FD),
+                        color = MintDeep,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -1382,11 +1386,11 @@ private fun PowerUpdateDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Power Bank Available", color = Color.White, fontSize = 14.sp)
+                    Text("Power Bank Available", color = TextPrimary, fontSize = 14.sp)
                     Switch(
                         checked = hasBank,
                         onCheckedChange = { hasBank = it },
-                        colors = SwitchDefaults.colors(checkedThumbColor = Color.Black, checkedTrackColor = JeevanBrandGreen)
+                        colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = MintPrimary)
                     )
                 }
 
@@ -1456,14 +1460,14 @@ private fun PowerUpdateDialog(
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF223447))) {
-                Text("Cancel", color = Color.White)
+            OutlinedButton(onClick = onDismiss) {
+                Text("Cancel", color = TextSecondary)
             }
         }
     )
@@ -1482,9 +1486,9 @@ private fun FuelUpdateDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
-            Text("Update Vehicle & Fuel", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("Update Vehicle & Fuel", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -1493,29 +1497,30 @@ private fun FuelUpdateDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Evacuation Vehicle Available", color = Color.White, fontSize = 14.sp)
+                    Text("Evacuation Vehicle Available", color = TextPrimary, fontSize = 14.sp)
                     Switch(
                         checked = hasVehicle,
                         onCheckedChange = { hasVehicle = it },
-                        colors = SwitchDefaults.colors(checkedThumbColor = Color.Black, checkedTrackColor = JeevanBrandGreen)
+                        colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = MintPrimary)
                     )
                 }
 
                 if (hasVehicle) {
-                    Text("Vehicle Type", color = JeevanTextMuted, fontSize = 12.sp)
+                    Text("Vehicle Type", color = TextSecondary, fontSize = 12.sp)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         listOf("4-Wheeler", "2-Wheeler").forEach { type ->
                             val isSel = vehicleType.contains(type, ignoreCase = true)
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(if (isSel) JeevanBrandGreen else Color(0xFF1E2F40))
+                                    .background(if (isSel) MintPrimary else AppBackground)
+                                    .border(1.dp, if (isSel) MintPrimary else BorderSubtle, RoundedCornerShape(8.dp))
                                     .clickable { vehicleType = if (type == "4-Wheeler") "4-Wheeler (Car / SUV)" else "2-Wheeler (Motorcycle / Scooter)" }
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
                             ) {
                                 Text(
                                     text = type,
-                                    color = if (isSel) Color.Black else Color.White,
+                                    color = if (isSel) Color.White else TextPrimary,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -1537,7 +1542,7 @@ private fun FuelUpdateDialog(
                     val estRange = (pctVal / 100.0) * 450.0
                     Text(
                         text = "Estimated driving range: ${estRange.toInt()} km",
-                        color = Color(0xFF93C5FD),
+                        color = TextSecondary,
                         fontSize = 12.sp
                     )
                 }
@@ -1556,14 +1561,14 @@ private fun FuelUpdateDialog(
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF223447))) {
-                Text("Cancel", color = Color.White)
+            OutlinedButton(onClick = onDismiss) {
+                Text("Cancel", color = TextSecondary)
             }
         }
     )
@@ -1588,9 +1593,9 @@ private fun MedicalUpdateDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
-            Text("Update Medical Supplies", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("Update Medical Supplies", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1599,28 +1604,28 @@ private fun MedicalUpdateDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("First Aid Kit Equipped", color = Color.White, fontSize = 14.sp)
+                    Text("First Aid Kit Equipped", color = TextPrimary, fontSize = 14.sp)
                     Switch(
                         checked = hasFirstAid,
                         onCheckedChange = { hasFirstAid = it },
-                        colors = SwitchDefaults.colors(checkedThumbColor = Color.Black, checkedTrackColor = JeevanBrandGreen)
+                        colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = MintPrimary)
                     )
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("Critical Prescription Medicine", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Critical Prescription Medicine", color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
 
                 OutlinedTextField(
                     value = medName,
                     onValueChange = { medName = it },
                     label = { Text("Medicine Name") },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = JeevanBrandGreen,
-                        unfocusedBorderColor = Color(0xFF2E4155),
-                        focusedLabelColor = JeevanBrandGreen,
-                        unfocusedLabelColor = JeevanTextMuted
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedLabelColor = MintPrimary,
+                        unfocusedLabelColor = TextSecondary
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -1662,14 +1667,14 @@ private fun MedicalUpdateDialog(
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Save", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF223447))) {
-                Text("Cancel", color = Color.White)
+            OutlinedButton(onClick = onDismiss) {
+                Text("Cancel", color = TextSecondary)
             }
         }
     )
@@ -1683,9 +1688,9 @@ private fun EquipmentChecklistDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF15222E),
+        containerColor = SurfaceWhite,
         title = {
-            Text("Emergency Equipment Readiness", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("Emergency Equipment Readiness", color = TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         },
         text = {
             Column(
@@ -1695,14 +1700,15 @@ private fun EquipmentChecklistDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (items.isEmpty()) {
-                    Text("No essential equipment configured.", color = JeevanTextMuted, fontSize = 13.sp)
+                    Text("No essential equipment configured.", color = TextSecondary, fontSize = 13.sp)
                 } else {
                     items.forEach { item ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (item.isCompleted) Color(0xFF183329) else Color(0xFF1B2836))
+                                .background(if (item.isCompleted) MintLight else AppBackground)
+                                .border(1.dp, if (item.isCompleted) MintPrimary.copy(alpha = 0.3f) else BorderSubtle, RoundedCornerShape(8.dp))
                                 .clickable { onToggle(item) }
                                 .padding(horizontal = 10.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -1711,15 +1717,15 @@ private fun EquipmentChecklistDialog(
                                 checked = item.isCompleted,
                                 onCheckedChange = { onToggle(item) },
                                 colors = CheckboxDefaults.colors(
-                                    checkedColor = JeevanBrandGreen,
-                                    checkmarkColor = Color.Black,
-                                    uncheckedColor = Color(0xFF475E77)
+                                    checkedColor = MintPrimary,
+                                    checkmarkColor = Color.White,
+                                    uncheckedColor = BorderSubtle
                                 )
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = item.title,
-                                color = if (item.isCompleted) Color.White else Color(0xFFCBD5E1),
+                                color = if (item.isCompleted) MintDeep else TextPrimary,
                                 fontSize = 13.sp,
                                 fontWeight = if (item.isCompleted) FontWeight.SemiBold else FontWeight.Normal
                             )
@@ -1731,9 +1737,9 @@ private fun EquipmentChecklistDialog(
         confirmButton = {
             Button(
                 onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(containerColor = JeevanBrandGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary)
             ) {
-                Text("Done", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Done", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         }
     )
@@ -1758,15 +1764,15 @@ private fun ValidatingTextField(
             isError = errorMessage != null,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedBorderColor = JeevanBrandGreen,
-                unfocusedBorderColor = Color(0xFF2E4155),
-                focusedLabelColor = JeevanBrandGreen,
-                unfocusedLabelColor = JeevanTextMuted,
-                errorBorderColor = Color(0xFFEF4444),
-                errorLabelColor = Color(0xFFEF4444),
-                cursorColor = JeevanBrandGreen
+                focusedTextColor = TextPrimary,
+                unfocusedTextColor = TextPrimary,
+                focusedBorderColor = MintPrimary,
+                unfocusedBorderColor = BorderSubtle,
+                focusedLabelColor = MintPrimary,
+                unfocusedLabelColor = TextSecondary,
+                errorBorderColor = EmergencyRed,
+                errorLabelColor = EmergencyRed,
+                cursorColor = MintPrimary
             ),
             modifier = Modifier.fillMaxWidth()
         )
@@ -1774,7 +1780,7 @@ private fun ValidatingTextField(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = errorMessage,
-                color = Color(0xFFEF4444),
+                color = EmergencyRed,
                 fontSize = 11.sp
             )
         }

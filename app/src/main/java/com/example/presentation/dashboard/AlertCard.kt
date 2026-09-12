@@ -66,6 +66,13 @@ import com.example.domain.model.AppLanguage
 import com.example.domain.model.AppStrings
 import com.example.domain.model.DisasterAlert
 import com.example.domain.model.LocalizationData
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.utils.EmergencyAudioAnnouncer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -248,9 +255,9 @@ fun DisasterAlertCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Share Button
-                val buttonBg = if (isCoral) Color.White.copy(alpha = 0.2f) else Color(0xFFF1F5F9)
-                val buttonContentColor = if (isCoral) Color.White else Color(0xFF1E293B)
-                val buttonBorder = if (isCoral) BorderStroke(1.dp, Color.White.copy(alpha = 0.4f)) else BorderStroke(1.dp, Color(0xFFE2E8F0))
+                val buttonBg = if (isCoral) Color.White.copy(alpha = 0.2f) else MintLight
+                val buttonContentColor = if (isCoral) Color.White else MintDeep
+                val buttonBorder = if (isCoral) BorderStroke(1.dp, Color.White.copy(alpha = 0.4f)) else BorderStroke(1.dp, BorderSubtle)
 
                 Button(
                     onClick = {
@@ -504,10 +511,10 @@ fun DisasterAlertCard(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F172A)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MintPrimary),
                     shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text(strings.close, fontWeight = FontWeight.Bold)
+                    Text(strings.close, color = Color.White, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -59,12 +59,18 @@ import com.example.data.local.db.SafeLocationEntity
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.CautionAmber
 import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
 import com.example.ui.theme.RescueCyan
 import com.example.ui.theme.SafetyGreen
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 import com.example.utils.GeoLocationUtils
 
@@ -83,6 +89,7 @@ fun SafeLocationsScreen(
     var showAddDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "SAFE LOCATIONS & SHELTERS",
@@ -110,13 +117,13 @@ fun SafeLocationsScreen(
                         style = MaterialTheme.typography.labelMedium.copy(
                             letterSpacing = 1.2.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = TextSecondary
                         )
                     )
                     Button(
                         onClick = { showAddDialog = true },
                         shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                        colors = ButtonDefaults.buttonColors(containerColor = MintPrimary, contentColor = Color.White)
                     ) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -129,7 +136,7 @@ fun SafeLocationsScreen(
                 item {
                     Text(
                         text = "No safe locations registered. Tap ADD SHELTER to save community centres, high ground, or family addresses.",
-                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
                     )
                 }
             }
@@ -207,10 +214,10 @@ fun SafeLocationCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Slate800),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
         border = androidx.compose.foundation.BorderStroke(
-            if (isTarget) 2.dp else 1.dp,
-            if (isTarget) RescueCyan else Slate700
+            if (isTarget) 1.5.dp else 1.dp,
+            if (isTarget) MintPrimary else BorderSubtle
         )
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -224,14 +231,14 @@ fun SafeLocationCard(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(categoryColor.copy(alpha = 0.2f)),
+                            .background(categoryColor.copy(alpha = 0.12f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(imageVector = Icons.Default.Place, contentDescription = null, tint = categoryColor, modifier = Modifier.size(20.dp))
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
-                        Text(text = location.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                        Text(text = location.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary))
                         Text(
                             text = "${location.category} • ${location.capacity}",
                             style = MaterialTheme.typography.labelSmall.copy(color = categoryColor, fontWeight = FontWeight.SemiBold)
@@ -240,19 +247,19 @@ fun SafeLocationCard(
                 }
                 if (!location.isPreloaded) {
                     IconButton(onClick = onDelete) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete", tint = Slate700)
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete", tint = TextSecondary)
                     }
                 }
             }
 
             Text(
                 text = "Straight-line: ~${String.format("%.1f", distanceKm)} km • Compass: ${String.format("%.0f", bearingDeg)}° (${GeoLocationUtils.bearingToCardinal(bearingDeg)})",
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = RescueCyan)
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = MintDeep)
             )
 
             Text(
                 text = location.notes,
-                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
             )
 
             Row(
@@ -262,7 +269,10 @@ fun SafeLocationCard(
                 Button(
                     onClick = onSelectTarget,
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = if (isTarget) SafetyGreen else RescueCyan),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isTarget) MintDeep else MintPrimary,
+                        contentColor = Color.White
+                    ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Icon(imageVector = Icons.Default.Navigation, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -274,7 +284,9 @@ fun SafeLocationCard(
                     OutlinedButton(
                         onClick = onCall,
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary)
                     ) {
                         Icon(imageVector = Icons.Default.Phone, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -303,40 +315,83 @@ fun AddSafeLocationDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Safe Location", fontWeight = FontWeight.Bold) },
+        containerColor = SurfaceWhite,
+        titleContentColor = TextPrimary,
+        textContentColor = TextPrimary,
+        title = { Text("Add Safe Location", fontWeight = FontWeight.Bold, color = TextPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlinedTextField(
+                androidx.compose.material3.OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Location / Shelter Name") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary
+                    )
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedTextField(
+                    androidx.compose.material3.OutlinedTextField(
                         value = latText,
                         onValueChange = { latText = it },
                         label = { Text("Latitude") },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SurfaceWhite,
+                            unfocusedContainerColor = SurfaceWhite,
+                            focusedBorderColor = MintPrimary,
+                            unfocusedBorderColor = BorderSubtle,
+                            focusedTextColor = TextPrimary,
+                            unfocusedTextColor = TextPrimary
+                        )
                     )
-                    OutlinedTextField(
+                    androidx.compose.material3.OutlinedTextField(
                         value = lngText,
                         onValueChange = { lngText = it },
                         label = { Text("Longitude") },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SurfaceWhite,
+                            unfocusedContainerColor = SurfaceWhite,
+                            focusedBorderColor = MintPrimary,
+                            unfocusedBorderColor = BorderSubtle,
+                            focusedTextColor = TextPrimary,
+                            unfocusedTextColor = TextPrimary
+                        )
                     )
                 }
-                OutlinedTextField(
+                androidx.compose.material3.OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
                     label = { Text("Emergency Phone") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary
+                    )
                 )
-                OutlinedTextField(
+                androidx.compose.material3.OutlinedTextField(
                     value = notes,
                     onValueChange = { notes = it },
                     label = { Text("Notes (e.g. Generators, Medical Staff)") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = MintPrimary,
+                        unfocusedBorderColor = BorderSubtle,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary
+                    )
                 )
             }
         },
@@ -349,11 +404,14 @@ fun AddSafeLocationDialog(
                         onAdd(name, lat, lng, category, capacity, phone, notes)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
+                colors = ButtonDefaults.buttonColors(containerColor = MintPrimary, contentColor = Color.White)
             ) { Text("SAVE") }
         },
         dismissButton = {
-            OutlinedButton(onClick = onDismiss) { Text("CANCEL") }
+            OutlinedButton(
+                onClick = onDismiss,
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
+            ) { Text("CANCEL", color = TextSecondary) }
         }
     )
 }

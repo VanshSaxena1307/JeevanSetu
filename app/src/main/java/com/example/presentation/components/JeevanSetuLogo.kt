@@ -1,6 +1,5 @@
 package com.example.presentation.components
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -14,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +20,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
-import com.example.ui.theme.JeevanBrandGreen
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.TextPrimary
 
 @Composable
 fun JeevanSetuLogo(
@@ -36,7 +34,7 @@ fun JeevanSetuLogo(
             .clip(RoundedCornerShape(size * 0.22f))
             .border(
                 width = 1.dp,
-                color = Color(0xFF1E2E3B),
+                color = BorderSubtle,
                 shape = RoundedCornerShape(size * 0.22f)
             ),
         contentAlignment = Alignment.Center
@@ -62,10 +60,10 @@ fun JeevanSetuBrandHeader(
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = "Jeevan Setu",
-            color = Color.White,
+            color = TextPrimary,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            letterSpacing = 0.4.sp
+            letterSpacing = 0.2.sp
         )
     }
 }

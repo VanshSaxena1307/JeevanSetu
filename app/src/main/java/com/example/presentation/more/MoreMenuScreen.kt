@@ -42,10 +42,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.AppLanguage
 import com.example.presentation.components.JeevanSetuBrandHeader
-import com.example.ui.theme.JeevanBg
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
-import com.example.ui.theme.JeevanTextMuted
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun MoreMenuScreen(
@@ -64,7 +68,7 @@ fun MoreMenuScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(JeevanBg)
+            .background(AppBackground)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
             .testTag("more_menu_screen")
@@ -76,7 +80,7 @@ fun MoreMenuScreen(
 
         Text(
             text = "DISASTER RESILIENCE SUITE",
-            color = JeevanTextMuted,
+            color = TextSecondary,
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp
@@ -89,8 +93,8 @@ fun MoreMenuScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(Color(0xFF132332))
-                .border(1.dp, Color(0xFF1F354D), RoundedCornerShape(14.dp))
+                .background(SurfaceWhite)
+                .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
                 .clickable { onOpenLanguageSheet() }
                 .padding(14.dp)
         ) {
@@ -104,13 +108,13 @@ fun MoreMenuScreen(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFF1B3B59)),
+                            .background(MintLight),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Translate,
                             contentDescription = "Language",
-                            tint = Color(0xFF38BDF8),
+                            tint = MintDeep,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -118,14 +122,15 @@ fun MoreMenuScreen(
                     Column {
                         Text(
                             text = "App Language / भाषा",
-                            color = Color.White,
+                            color = TextPrimary,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "${currentLanguage.nativeName} (${currentLanguage.englishName})",
-                            color = Color(0xFF38BDF8),
-                            fontSize = 12.sp
+                            color = MintDeep,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
@@ -133,17 +138,17 @@ fun MoreMenuScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null,
-                    tint = JeevanTextMuted,
+                    tint = TextSecondary,
                     modifier = Modifier.size(14.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "Emergency & Survival Tools",
-            color = Color.White,
+            color = TextPrimary,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold
         )
@@ -160,49 +165,49 @@ fun MoreMenuScreen(
             )
             MoreNavigationItem(
                 icon = Icons.AutoMirrored.Filled.MenuBook,
-                iconColor = Color(0xFF38BDF8),
+                iconColor = Color(0xFF0284C7),
                 title = "Disaster Survival Guides",
                 subtitle = "Verified offline SOPs for Floods, Earthquakes & Cyclones",
                 onClick = onNavigateToGuides
             )
             MoreNavigationItem(
                 icon = Icons.Default.LocalHospital,
-                iconColor = Color(0xFFF43F5E),
+                iconColor = Color(0xFFE11D48),
                 title = "First Aid Encyclopedia",
                 subtitle = "Life-saving emergency instructions with visual steps",
                 onClick = onNavigateToFirstAid
             )
             MoreNavigationItem(
                 icon = Icons.Default.CrisisAlert,
-                iconColor = Color(0xFFF59E0B),
+                iconColor = Color(0xFFD97706),
                 title = "Risk Assessment Engine",
                 subtitle = "Evaluate danger level & evacuation recommendation",
                 onClick = onNavigateToAssessment
             )
             MoreNavigationItem(
                 icon = Icons.Default.Calculate,
-                iconColor = Color(0xFF10B981),
+                iconColor = MintPrimary,
                 title = "Survival Days Calculator",
                 subtitle = "Calculate water, meal ration & power longevity",
                 onClick = onNavigateToCalculator
             )
             MoreNavigationItem(
                 icon = Icons.Default.FamilyRestroom,
-                iconColor = Color(0xFFA855F7),
+                iconColor = Color(0xFF9333EA),
                 title = "Family Profile & Headcount",
                 subtitle = "Manage family members, medical needs & locations",
                 onClick = onNavigateToFamily
             )
             MoreNavigationItem(
                 icon = Icons.Default.Checklist,
-                iconColor = Color(0xFF06B6D4),
+                iconColor = Color(0xFF0891B2),
                 title = "Emergency Go-Bag Checklist",
                 subtitle = "Track readiness of essential supplies",
                 onClick = onNavigateToChecklist
             )
             MoreNavigationItem(
                 icon = Icons.Default.Settings,
-                iconColor = JeevanTextMuted,
+                iconColor = TextSecondary,
                 title = "System Settings & GPS",
                 subtitle = "Sync coordinates, toggle battery mode & cache",
                 onClick = onNavigateToSettings
@@ -225,8 +230,8 @@ private fun MoreNavigationItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(JeevanCard)
-            .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
             .clickable { onClick() }
             .padding(14.dp)
     ) {
@@ -243,7 +248,7 @@ private fun MoreNavigationItem(
                     modifier = Modifier
                         .size(38.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF1B2735)),
+                        .background(iconColor.copy(alpha = 0.1f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -259,14 +264,14 @@ private fun MoreNavigationItem(
                 Column {
                     Text(
                         text = title,
-                        color = Color.White,
+                        color = TextPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = subtitle,
-                        color = JeevanTextMuted,
+                        color = TextSecondary,
                         fontSize = 11.sp,
                         lineHeight = 15.sp
                     )
@@ -278,7 +283,7 @@ private fun MoreNavigationItem(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null,
-                tint = JeevanTextMuted,
+                tint = TextSecondary,
                 modifier = Modifier.size(14.dp)
             )
         }

@@ -1,7 +1,7 @@
 package com.example.presentation.firstaid
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,9 +44,12 @@ import com.example.domain.model.FirstAidTopic
 import com.example.presentation.components.EmergencyTopBar
 import com.example.presentation.components.SafetyDisclaimerCard
 import com.example.presentation.viewmodel.JeevanSetuViewModel
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
 import com.example.ui.theme.EmergencyRed
-import com.example.ui.theme.Slate700
-import com.example.ui.theme.Slate800
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun FirstAidScreen(
@@ -58,6 +61,7 @@ fun FirstAidScreen(
     val topics = remember { viewModel.getFirstAidTopics() }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             EmergencyTopBar(
                 title = "EMERGENCY FIRST AID",
@@ -77,22 +81,23 @@ fun FirstAidScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = EmergencyRed.copy(alpha = 0.15f)),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, EmergencyRed)
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF2F2)),
+                    border = BorderStroke(1.dp, EmergencyRed.copy(alpha = 0.3f)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
-                    Column(modifier = Modifier.padding(14.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "OFFLINE TRAUMA & FIELD PROTOCOLS",
                             style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.Black,
+                                fontWeight = FontWeight.Bold,
                                 color = EmergencyRed
                             )
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "When emergency dispatch or hospitals are cut off, apply these basic life support stabilization measures. Do not perform complex procedures beyond basic stabilization.",
-                            style = MaterialTheme.typography.bodySmall.copy(color = Color.White, lineHeight = 16.sp)
+                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary, lineHeight = 18.sp)
                         )
                     }
                 }
@@ -104,9 +109,10 @@ fun FirstAidScreen(
                         .fillMaxWidth()
                         .clickable { onSelectTopic(topic) }
                         .testTag("first_aid_${topic.id}"),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Slate800),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Slate700)
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, BorderSubtle),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -118,20 +124,21 @@ fun FirstAidScreen(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .background(EmergencyRed.copy(alpha = 0.2f)),
+                                .background(Color(0xFFFEE2E2)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(imageVector = Icons.Default.LocalHospital, contentDescription = null, tint = EmergencyRed, modifier = Modifier.size(22.dp))
                         }
                         Spacer(modifier = Modifier.width(14.dp))
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = topic.title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                            Text(text = topic.title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary))
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = "${topic.urgencyLevel} • ${topic.immediateActions.size} steps",
-                                style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                style = MaterialTheme.typography.labelSmall.copy(color = TextSecondary)
                             )
                         }
-                        Icon(imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = Slate700)
+                        Icon(imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = TextSecondary)
                     }
                 }
             }

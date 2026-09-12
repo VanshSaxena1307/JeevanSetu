@@ -21,7 +21,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.JeevanTextMuted
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun CircularResourceGauge(
@@ -45,11 +47,10 @@ fun CircularResourceGauge(
             Canvas(modifier = Modifier.size(size)) {
                 val diameter = this.size.minDimension
                 val pxStroke = strokeWidth.toPx()
-                val radius = (diameter - pxStroke) / 2f
 
-                // Background track
+                // Background track (subtle light border)
                 drawArc(
-                    color = Color(0xFF1F2E3E),
+                    color = BorderSubtle,
                     startAngle = -90f,
                     sweepAngle = 360f,
                     useCenter = false,
@@ -80,7 +81,7 @@ fun CircularResourceGauge(
 
         Text(
             text = title,
-            color = Color.White,
+            color = TextPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
@@ -90,7 +91,7 @@ fun CircularResourceGauge(
 
         Text(
             text = subtitle,
-            color = JeevanTextMuted,
+            color = TextSecondary,
             fontSize = 10.sp,
             lineHeight = 13.sp,
             textAlign = TextAlign.Center

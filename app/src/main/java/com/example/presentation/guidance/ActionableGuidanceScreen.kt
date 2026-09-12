@@ -38,12 +38,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.JeevanBg
-import com.example.ui.theme.JeevanCard
-import com.example.ui.theme.JeevanCardBorder
-import com.example.ui.theme.JeevanRedBg
-import com.example.ui.theme.JeevanRedBorder
-import com.example.ui.theme.JeevanTextMuted
+import com.example.ui.theme.AppBackground
+import com.example.ui.theme.BorderSubtle
+import com.example.ui.theme.CautionAmber
+import com.example.ui.theme.EmergencyRed
+import com.example.ui.theme.MintDeep
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintPrimary
+import com.example.ui.theme.RescueCyan
+import com.example.ui.theme.SurfaceWhite
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarningOrange
 
 @Composable
 fun ActionableGuidanceScreen(
@@ -53,7 +59,7 @@ fun ActionableGuidanceScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(JeevanBg)
+            .background(AppBackground)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
             .testTag("guidance_screen")
@@ -71,7 +77,7 @@ fun ActionableGuidanceScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color.White
+                        tint = TextPrimary
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -79,7 +85,7 @@ fun ActionableGuidanceScreen(
 
             Text(
                 text = "Guidance",
-                color = Color.White,
+                color = TextPrimary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -92,8 +98,8 @@ fun ActionableGuidanceScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(JeevanRedBg)
-                .border(1.dp, JeevanRedBorder, RoundedCornerShape(14.dp))
+                .background(EmergencyRed.copy(alpha = 0.08f))
+                .border(1.dp, EmergencyRed.copy(alpha = 0.4f), RoundedCornerShape(14.dp))
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -101,13 +107,13 @@ fun ActionableGuidanceScreen(
                     modifier = Modifier
                         .size(42.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF45181C)),
+                        .background(EmergencyRed.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Warning,
                         contentDescription = "Critical Warning",
-                        tint = Color(0xFFEF4444),
+                        tint = EmergencyRed,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -117,7 +123,7 @@ fun ActionableGuidanceScreen(
                 Column {
                     Text(
                         text = "CRITICAL",
-                        color = Color(0xFFEF4444),
+                        color = EmergencyRed,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = 0.5.sp
@@ -125,7 +131,7 @@ fun ActionableGuidanceScreen(
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "Battery below emergency threshold. Switch to low-power mode.",
-                        color = Color(0xFFFCA5A5),
+                        color = TextPrimary,
                         fontSize = 12.sp,
                         lineHeight = 16.sp
                     )
@@ -138,7 +144,7 @@ fun ActionableGuidanceScreen(
         // Priority Actions
         Text(
             text = "Priority Actions",
-            color = Color.White,
+            color = TextPrimary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -148,25 +154,25 @@ fun ActionableGuidanceScreen(
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PriorityActionItem(
                 number = "1",
-                numberColor = Color(0xFFEF4444),
+                numberColor = EmergencyRed,
                 title = "Enable low-power mode",
                 subtitle = "Save battery for essential use"
             )
             PriorityActionItem(
                 number = "2",
-                numberColor = Color(0xFFF97316),
+                numberColor = WarningOrange,
                 title = "Reduce water usage",
                 subtitle = "Limit to 3L per person per day"
             )
             PriorityActionItem(
                 number = "3",
-                numberColor = Color(0xFFEAB308),
+                numberColor = CautionAmber,
                 title = "Avoid non-essential travel",
                 subtitle = "Conserve fuel"
             )
             PriorityActionItem(
                 number = "4",
-                numberColor = Color(0xFF38BDF8),
+                numberColor = MintDeep,
                 title = "Keep emergency reserve",
                 subtitle = "Maintain 20% of all resources"
             )
@@ -177,7 +183,7 @@ fun ActionableGuidanceScreen(
         // Recommendations
         Text(
             text = "Recommendations",
-            color = Color.White,
+            color = TextPrimary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -187,22 +193,22 @@ fun ActionableGuidanceScreen(
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             RecommendationItem(
                 icon = Icons.Default.WbSunny,
-                iconColor = Color(0xFF38BDF8),
+                iconColor = CautionAmber,
                 text = "Use solar charging (if available)"
             )
             RecommendationItem(
                 icon = Icons.Default.Groups,
-                iconColor = Color(0xFF38BDF8),
+                iconColor = MintDeep,
                 text = "Share resources with nearby group"
             )
             RecommendationItem(
                 icon = Icons.Default.Favorite,
-                iconColor = Color(0xFFF43F5E),
+                iconColor = EmergencyRed,
                 text = "Check on vulnerable people"
             )
             RecommendationItem(
                 icon = Icons.Default.CalendarMonth,
-                iconColor = Color(0xFF2DD4BF),
+                iconColor = MintPrimary,
                 text = "Reassess inventory in 6 hours"
             )
         }
@@ -222,8 +228,8 @@ private fun PriorityActionItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(JeevanCard)
-            .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
             .padding(14.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -231,7 +237,7 @@ private fun PriorityActionItem(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(numberColor.copy(alpha = 0.2f))
+                    .background(numberColor.copy(alpha = 0.12f))
                     .border(1.5.dp, numberColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -248,14 +254,14 @@ private fun PriorityActionItem(
             Column {
                 Text(
                     text = title,
-                    color = Color.White,
+                    color = TextPrimary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
-                    color = JeevanTextMuted,
+                    color = TextSecondary,
                     fontSize = 12.sp
                 )
             }
@@ -273,8 +279,8 @@ private fun RecommendationItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(JeevanCard)
-            .border(1.dp, JeevanCardBorder, RoundedCornerShape(14.dp))
+            .background(SurfaceWhite)
+            .border(1.dp, BorderSubtle, RoundedCornerShape(14.dp))
             .padding(14.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -282,7 +288,7 @@ private fun RecommendationItem(
                 modifier = Modifier
                     .size(34.dp)
                     .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFF1B2735)),
+                    .background(MintLight),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -297,7 +303,7 @@ private fun RecommendationItem(
 
             Text(
                 text = text,
-                color = Color(0xFFE2E8F0),
+                color = TextPrimary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium
             )

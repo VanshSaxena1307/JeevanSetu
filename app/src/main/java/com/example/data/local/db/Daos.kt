@@ -204,6 +204,12 @@ interface MapRegionDao {
     @Update
     suspend fun updateRegion(region: MapRegionEntity)
 
+    @Delete
+    suspend fun deleteRegion(region: MapRegionEntity)
+
+    @Query("DELETE FROM map_regions WHERE id = :id")
+    suspend fun deleteRegionById(id: Long)
+
     @Query("SELECT COUNT(*) FROM map_regions")
     suspend fun count(): Int
 }

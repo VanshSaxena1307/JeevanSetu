@@ -118,6 +118,7 @@ dependencies {
   implementation(libs.moshi.kotlin)
   implementation(libs.okhttp)
   implementation(libs.play.services.location)
+  implementation(libs.osmdroid.android)
   implementation(libs.retrofit)
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
@@ -138,3 +139,19 @@ dependencies {
   "ksp"(libs.androidx.room.compiler)
   "ksp"(libs.moshi.kotlin.codegen)
 }
+
+layout.buildDirectory.set(file("C:/Users/vansh/.builds/JeevanSetu/app"))
+
+tasks.matching { it.name == "assembleDebug" }.configureEach {
+  doLast {
+    val srcDir = file("C:/Users/vansh/.builds/JeevanSetu/app/outputs/apk/debug")
+    val targetDir = file("${projectDir}/build/outputs/apk/debug")
+    if (srcDir.exists()) {
+      targetDir.mkdirs()
+      srcDir.listFiles()?.forEach { f ->
+        f.copyTo(File(targetDir, f.name), overwrite = true)
+      }
+    }
+  }
+}
+

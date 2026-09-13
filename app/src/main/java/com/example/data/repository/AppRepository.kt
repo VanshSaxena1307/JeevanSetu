@@ -84,4 +84,6 @@ class AppRepository(private val database: AppDatabase) {
     suspend fun getAllMapRegionsOnce(): List<MapRegionEntity> = database.mapRegionDao().getAllRegionsOnce()
     suspend fun addMapRegion(region: MapRegionEntity): Long = database.mapRegionDao().insertRegion(region)
     suspend fun updateMapRegion(region: MapRegionEntity) = database.mapRegionDao().updateRegion(region)
+    suspend fun deleteMapRegion(region: MapRegionEntity) = database.mapRegionDao().deleteRegion(region)
+    suspend fun deleteMapRegionById(id: Long) = database.mapRegionDao().deleteRegionById(id)
 }

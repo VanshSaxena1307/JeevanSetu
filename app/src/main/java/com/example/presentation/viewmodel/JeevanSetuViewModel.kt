@@ -16,6 +16,7 @@ import com.example.data.local.db.PowerResourceEntity
 import com.example.data.local.db.SafeLocationEntity
 import com.example.data.local.db.UserProfileEntity
 import com.example.data.local.db.WaterResourceEntity
+import com.example.data.map.OfflineMapManager
 import com.example.data.repository.AppRepository
 import com.example.data.repository.DisasterGuideRepository
 import com.example.domain.engine.AssessmentAnswers
@@ -176,6 +177,26 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
 
     private val _isDownloadingAreaMap = MutableStateFlow<Boolean>(false)
     val isDownloadingAreaMap: StateFlow<Boolean> = _isDownloadingAreaMap.asStateFlow()
+
+    private val _offlineStorageUsageBytes = MutableStateFlow(0L)
+    val offlineStorageUsageBytes: StateFlow<Long> = _offlineStorageUsageBytes.asStateFlow()
+
+    private val _availableStorageBytes = MutableStateFlow(1024L * 1024L * 1024L)
+    val availableStorageBytes: StateFlow<Long> = _availableStorageBytes.asStateFlow()
+
+    private val _downloadError = MutableStateFlow<String?>(null)
+    val downloadError: StateFlow<String?> = _downloadError.asStateFlow()
+
+    fun clearDownloadError() {
+        _downloadError.value = null
+    }
+
+    fun updateStorageMetrics() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _offlineStorageUsageBytes.value = OfflineMapManager.getOfflineStorageBytes(getApplication())
+            _availableStorageBytes.value = OfflineMapManager.getAvailableStorageBytes(getApplication())
+        }
+    }
 
     // Location Display matching Disaster Guard UI
     private val _displayLocation = MutableStateFlow(
@@ -339,6 +360,8 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
     )
 
     init {
+        OfflineMapManager.initOsmdroid(application)
+        updateStorageMetrics()
         refreshLocation()
         autoFixStuckDownloads()
     }
@@ -1033,46 +1056,69 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
 
     fun downloadMapRegion(region: MapRegionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            // Determine progression steps starting from current or 15%
-            val startProgress = if (region.downloadProgress in 1..90) region.downloadProgress else 15
-            val steps = mutableListOf<Int>()
-            var curr = startProgress
-            while (curr < 100) {
-                curr = (curr + 20).coerceAtMost(100)
-                steps.add(curr)
-            }
-            if (!steps.contains(100)) {
-                steps.add(100)
-            }
+            _downloadError.value = null
+            repository.updateMapRegion(
+                region.copy(
+                    downloadProgress = 5,
+                    isDownloaded = false
+                )
+            )
 
-            for (p in steps) {
-                delay(180)
-                if (p < 100) {
+            val downloadResult = OfflineMapManager.downloadRegionTiles(
+                context = getApplication(),
+                region = region,
+                onProgress = { p ->
                     repository.updateMapRegion(
                         region.copy(
                             downloadProgress = p,
-                            isDownloaded = false
+                            isDownloaded = (p >= 100)
                         )
                     )
-                } else {
-                    // Reached 100%: Save to device Downloads folder
-                    val shelters = repository.getAllSafeLocationsOnce()
-                    val exportResult = MapStorageExporter.exportMapRegionToDownloads(
-                        context = getApplication(),
-                        region = region,
-                        shelters = shelters
-                    )
-                    repository.updateMapRegion(
-                        region.copy(
-                            downloadProgress = 100,
-                            isDownloaded = true,
-                            downloadDate = System.currentTimeMillis(),
-                            exportedFilePath = exportResult.filePath
-                        )
-                    )
-                    _exportStatusMessage.value = exportResult.userMessage
                 }
+            )
+
+            if (downloadResult.isSuccess) {
+                val shelters = repository.getAllSafeLocationsOnce()
+                val exportResult = MapStorageExporter.exportMapRegionToDownloads(
+                    context = getApplication(),
+                    region = region,
+                    shelters = shelters
+                )
+                repository.updateMapRegion(
+                    region.copy(
+                        downloadProgress = 100,
+                        isDownloaded = true,
+                        downloadDate = System.currentTimeMillis(),
+                        exportedFilePath = exportResult.filePath
+                    )
+                )
+                _exportStatusMessage.value = "Offline map downloaded successfully for ${region.regionName}."
+                updateStorageMetrics()
+            } else {
+                repository.updateMapRegion(
+                    region.copy(
+                        downloadProgress = 0,
+                        isDownloaded = false
+                    )
+                )
+                _downloadError.value = downloadResult.exceptionOrNull()?.message ?: "Download failed. Please check internet connection."
             }
+        }
+    }
+
+    fun deleteMapRegion(region: MapRegionEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            OfflineMapManager.deleteRegionData(getApplication(), region)
+            repository.updateMapRegion(
+                region.copy(
+                    isDownloaded = false,
+                    downloadProgress = 0,
+                    downloadDate = 0L,
+                    exportedFilePath = null
+                )
+            )
+            updateStorageMetrics()
+            _exportStatusMessage.value = "Removed offline map data for ${region.regionName}."
         }
     }
 

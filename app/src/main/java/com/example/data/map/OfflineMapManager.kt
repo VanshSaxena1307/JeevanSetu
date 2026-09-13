@@ -232,7 +232,6 @@ object OfflineMapManager {
             if (downloadedCount % 5 == 0 || downloadedCount == totalTiles) {
                 onProgress(progress)
             }
-            delay(60)
         }
 
         onProgress(100)
@@ -240,7 +239,9 @@ object OfflineMapManager {
     }
 
     /**
-     * Deletes stored offline data for a region.
+     * Deletes stored offline data for a region, including:
+     *  - Exported JSON file if available
+     *  - Cached tile files in osmdroid filesystem cache for the region's bounding box
      */
     suspend fun deleteRegionData(context: Context, region: MapRegionEntity): Unit = withContext(Dispatchers.IO) {
         try {
@@ -256,6 +257,25 @@ object OfflineMapManager {
             val localJsonFile = File(File(context.filesDir, "offline_maps"), "DisasterGuard_Map_${sanitizedName}_Offline.json")
             if (localJsonFile.exists()) {
                 localJsonFile.delete()
+            }
+
+            // Delete cached OSM tiles for this region (zoom 11–14)
+            val tileCacheBase = File(context.cacheDir, "osmdroid/tiles/Mapnik")
+            val persistentCacheBase = File(context.filesDir, "osmdroid/tiles/Mapnik")
+
+            val latDelta = region.radiusKm / 111.0
+            val lngDelta = region.radiusKm / (111.0 * cos(Math.toRadians(region.centerLat)).coerceAtLeast(0.1))
+
+            for (z in 11..14) {
+                val (xMin, yMax) = deg2tile(region.centerLat - latDelta, region.centerLng - lngDelta, z)
+                val (xMax, yMin) = deg2tile(region.centerLat + latDelta, region.centerLng + lngDelta, z)
+
+                for (x in min(xMin, xMax)..max(xMin, xMax)) {
+                    for (y in min(yMin, yMax)..max(yMin, yMax)) {
+                        File(tileCacheBase, "$z/$x/${y}.png.tile").takeIf { it.exists() }?.delete()
+                        File(persistentCacheBase, "$z/$x/${y}.png.tile").takeIf { it.exists() }?.delete()
+                    }
+                }
             }
         } catch (_: Exception) {
         }

@@ -692,7 +692,7 @@ fun DashboardScreen(
                         )
                         ContextTile(
                             icon = Icons.Default.LocationOn,
-                            title = "Location",
+                            title = if (dashboardState.isGpsActive) "Location (GPS)" else "Location (Simulated)",
                             value = locationDisplay,
                             modifier = Modifier.weight(1f),
                             onClick = onNavigateToMap

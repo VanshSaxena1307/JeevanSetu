@@ -505,12 +505,13 @@ private fun InteractiveMapView(
         centerTarget ?: GeoPoint(currentLocation.latitude, currentLocation.longitude)
     }
 
-    LaunchedEffect(centerTarget) {
-        if (centerTarget != null && mapViewInstance != null) {
-            mapViewInstance?.controller?.animateTo(centerTarget)
-            mapViewInstance?.controller?.setZoom(14.0)
-        }
+    LaunchedEffect(centerTarget?.latitude, centerTarget?.longitude) {
+        val target = centerTarget ?: return@LaunchedEffect
+        mapViewInstance?.controller?.animateTo(target)
+        mapViewInstance?.controller?.setZoom(14.0)
     }
+
+    var lastOverlayKey by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
@@ -530,6 +531,13 @@ private fun InteractiveMapView(
             },
             update = { mapView ->
                 mapView.setUseDataConnection(isOnline)
+
+                val currentOverlayKey = "${currentLocation.latitude}_${currentLocation.longitude}_${currentLocation.isRealGps}_${safeLocations.size}_${showShelters}_${showHospitals}_${showHazards}_${showRoute}_${nearestLocation?.id}"
+                if (currentOverlayKey == lastOverlayKey) {
+                    return@AndroidView
+                }
+                lastOverlayKey = currentOverlayKey
+
                 mapView.overlays.clear()
 
                 // OSM Mandatory Copyright Overlay (ODbL / CC-BY-SA compliance)
@@ -542,10 +550,15 @@ private fun InteractiveMapView(
                 mapView.overlays.add(copyrightOverlay)
 
                 // 1. User Position Marker
+                val isSimulated = !currentLocation.isRealGps
                 val userMarker = Marker(mapView).apply {
                     position = GeoPoint(currentLocation.latitude, currentLocation.longitude)
-                    title = "Your Location"
-                    snippet = "GPS Accuracy: ${currentLocation.accuracyMeters.toInt()}m"
+                    title = if (isSimulated) "Simulated Location (Demo)" else "Your Location (Real GPS)"
+                    snippet = if (isSimulated) {
+                        "⚠ Demo coordinates — real GPS unavailable"
+                    } else {
+                        "GPS Accuracy: ${currentLocation.accuracyMeters.toInt()}m"
+                    }
                     icon = MapMarkerHelper.createUserMarker(context)
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 }
@@ -677,7 +690,10 @@ private fun InteractiveMapView(
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                LegendItem(dotColor = MintPrimary, label = "You (GPS)")
+                LegendItem(
+                    dotColor = MintPrimary,
+                    label = if (currentLocation.isRealGps) "You (Real GPS)" else "You (Simulated)"
+                )
                 LegendItem(dotColor = MintDeep, label = "Safe Shelter")
                 LegendItem(dotColor = EmergencyRed, label = "Hospital")
                 LegendLine(lineColor = MintDeep, label = "Evacuation Route")

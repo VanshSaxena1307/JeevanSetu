@@ -484,10 +484,6 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
             val current = repository.getUserProfileOnce() ?: UserProfileEntity()
             val newMode = !current.batterySaverMode
             repository.updateProfile(current.copy(batterySaverMode = newMode))
-            val power = repository.getPowerResourceOnce()
-            if (power != null) {
-                repository.updatePower(power.copy(phoneBatteryPercent = if (newMode) power.phoneBatteryPercent else power.phoneBatteryPercent))
-            }
         }
     }
 
@@ -1043,6 +1039,8 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
     fun autoFixStuckDownloads() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // Only attempt resume when device is online — avoids wasted coroutines at offline cold-start
+                if (!isOnline.value) return@launch
                 val regions = repository.getAllMapRegionsOnce()
                 for (r in regions) {
                     if (r.downloadProgress in 1..99 && !r.isDownloaded) {
@@ -1165,34 +1163,48 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
                 newRegion.copy(id = newId)
             }
 
-            // Execute full progressive download guarantee to 100%
-            val steps = listOf(20, 45, 70, 88, 100)
-            for (p in steps) {
-                delay(200)
-                if (p < 100) {
-                    repository.updateMapRegion(
-                        targetRegion.copy(
-                            downloadProgress = p,
-                            isDownloaded = false
+            // Execute actual OSM tile download using the real OfflineMapManager pipeline
+            val downloadResult = OfflineMapManager.downloadRegionTiles(
+                context = getApplication(),
+                region = targetRegion,
+                onProgress = { p ->
+                    viewModelScope.launch(Dispatchers.IO) {
+                        repository.updateMapRegion(
+                            targetRegion.copy(
+                                downloadProgress = p,
+                                isDownloaded = (p >= 100)
+                            )
                         )
-                    )
-                } else {
-                    val shelters = repository.getAllSafeLocationsOnce()
-                    val exportResult = MapStorageExporter.exportMapRegionToDownloads(
-                        context = getApplication(),
-                        region = targetRegion,
-                        shelters = shelters
-                    )
-                    repository.updateMapRegion(
-                        targetRegion.copy(
-                            downloadProgress = 100,
-                            isDownloaded = true,
-                            downloadDate = System.currentTimeMillis(),
-                            exportedFilePath = exportResult.filePath
-                        )
-                    )
-                    _exportStatusMessage.value = exportResult.userMessage
+                    }
                 }
+            )
+
+            if (downloadResult.isSuccess) {
+                val shelters = repository.getAllSafeLocationsOnce()
+                val exportResult = MapStorageExporter.exportMapRegionToDownloads(
+                    context = getApplication(),
+                    region = targetRegion,
+                    shelters = shelters
+                )
+                repository.updateMapRegion(
+                    targetRegion.copy(
+                        downloadProgress = 100,
+                        isDownloaded = true,
+                        downloadDate = System.currentTimeMillis(),
+                        exportedFilePath = exportResult.filePath
+                    )
+                )
+                _exportStatusMessage.value = exportResult.userMessage
+                updateStorageMetrics()
+            } else {
+                repository.updateMapRegion(
+                    targetRegion.copy(
+                        downloadProgress = 0,
+                        isDownloaded = false
+                    )
+                )
+                _downloadError.value = downloadResult.exceptionOrNull()?.message
+                    ?: "Download failed. Check internet connection."
             }
             _isDownloadingAreaMap.value = false
         }

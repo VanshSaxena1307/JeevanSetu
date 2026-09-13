@@ -34,10 +34,11 @@ class NetworkMonitor(context: Context) {
             }
         }
 
-        // Initial check
+        // Initial check — must match callback criteria: both INTERNET and VALIDATED
         val currentNetwork = connectivityManager?.activeNetwork
         val caps = connectivityManager?.getNetworkCapabilities(currentNetwork)
-        val initialOnline = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        val initialOnline = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
+                caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         trySend(initialOnline)
 
         val request = NetworkRequest.Builder()

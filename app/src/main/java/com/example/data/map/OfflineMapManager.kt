@@ -20,9 +20,12 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.tan
 
+import java.util.zip.ZipInputStream
+import kotlinx.coroutines.delay
+
 object OfflineMapManager {
 
-    private const val USER_AGENT = "JeevanSetu-DisasterResponse/1.0 (Android)"
+    private const val USER_AGENT = "JeevanSetu-DisasterResponse/1.0 (Android; Humanitarian-Offline)"
     private const val MIN_REQUIRED_STORAGE_BYTES = 50L * 1024L * 1024L // 50 MB
 
     private val httpClient by lazy {
@@ -45,21 +48,53 @@ object OfflineMapManager {
         config.osmdroidTileCache = tileCache
         config.userAgentValue = USER_AGENT
 
-        // Copy bundled offline map archives from assets if not already copied
+        // Copy bundled offline map archives from assets if not already copied or if updated
         extractBundledAssetsIfMissing(context, basePath)
     }
 
     private fun extractBundledAssetsIfMissing(context: Context, targetDir: File) {
         try {
             val assetList = context.assets.list("offline_maps") ?: return
+            val tileCacheBase = File(context.cacheDir, "osmdroid/tiles/Mapnik")
+            val persistentCacheBase = File(context.filesDir, "osmdroid/tiles/Mapnik")
+            tileCacheBase.mkdirs()
+            persistentCacheBase.mkdirs()
+
             for (assetName in assetList) {
                 if (assetName.endsWith(".zip") || assetName.endsWith(".sqlite") || assetName.endsWith(".mbtiles")) {
                     val destFile = File(targetDir, assetName)
-                    if (!destFile.exists() || destFile.length() == 0L) {
-                        context.assets.open("offline_maps/$assetName").use { input ->
-                            FileOutputStream(destFile).use { output ->
-                                input.copyTo(output)
+                    val assetBytes = context.assets.open("offline_maps/$assetName").use { it.readBytes() }
+
+                    // 1. Copy archive file to osmdroid base directory for MapTileFileArchiveProvider
+                    if (!destFile.exists() || destFile.length() != assetBytes.size.toLong()) {
+                        FileOutputStream(destFile).use { output ->
+                            output.write(assetBytes)
+                        }
+                    }
+
+                    // 2. Also extract individual tiles to filesystem cache for MapTileFilesystemProvider
+                    if (assetName.endsWith(".zip")) {
+                        try {
+                            ZipInputStream(assetBytes.inputStream()).use { zipIn ->
+                                var entry = zipIn.nextEntry
+                                while (entry != null) {
+                                    if (!entry.isDirectory && entry.name.endsWith(".png")) {
+                                        val relPath = entry.name.removePrefix("Mapnik/").removePrefix("/")
+                                        val cacheTile = File(tileCacheBase, "$relPath.tile")
+                                        val persistentTile = File(persistentCacheBase, "$relPath.tile")
+                                        val tileBytes = zipIn.readBytes()
+                                        if (!cacheTile.exists() || cacheTile.length() != tileBytes.size.toLong()) {
+                                            cacheTile.parentFile?.mkdirs()
+                                            persistentTile.parentFile?.mkdirs()
+                                            FileOutputStream(cacheTile).use { it.write(tileBytes) }
+                                            FileOutputStream(persistentTile).use { it.write(tileBytes) }
+                                        }
+                                    }
+                                    zipIn.closeEntry()
+                                    entry = zipIn.nextEntry
+                                }
                             }
+                        } catch (_: Exception) {
                         }
                     }
                 }
@@ -197,6 +232,7 @@ object OfflineMapManager {
             if (downloadedCount % 5 == 0 || downloadedCount == totalTiles) {
                 onProgress(progress)
             }
+            delay(60)
         }
 
         onProgress(100)

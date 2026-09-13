@@ -370,8 +370,8 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch(Dispatchers.IO) {
             _isGpsAcquiring.value = true
             val profile = repository.getUserProfileOnce()
-            val fallbackLat = profile?.simulatedGpsLat ?: 12.9716
-            val fallbackLng = profile?.simulatedGpsLng ?: 77.5946
+            val fallbackLat = profile?.simulatedGpsLat ?: 28.6139
+            val fallbackLng = profile?.simulatedGpsLng ?: 77.2090
             val loc = locationProvider.getCurrentLocation(fallbackLat, fallbackLng)
             _currentLocation.value = loc
             val areaName = locationProvider.identifyAreaName(loc.latitude, loc.longitude)
@@ -1128,8 +1128,8 @@ class JeevanSetuViewModel(application: Application) : AndroidViewModel(applicati
             _isDownloadingAreaMap.value = true
 
             val profile = repository.getUserProfileOnce()
-            val fallbackLat = profile?.simulatedGpsLat ?: 12.9716
-            val fallbackLng = profile?.simulatedGpsLng ?: 77.5946
+            val fallbackLat = profile?.simulatedGpsLat ?: 28.6139
+            val fallbackLng = profile?.simulatedGpsLng ?: 77.2090
             val loc = locationProvider.getCurrentLocation(fallbackLat, fallbackLng)
             _currentLocation.value = loc
             val areaName = locationProvider.identifyAreaName(loc.latitude, loc.longitude)

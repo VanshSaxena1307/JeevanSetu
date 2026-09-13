@@ -90,9 +90,11 @@ import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
 import com.example.utils.GeoLocationUtils
 import com.example.utils.MapStorageExporter
+import org.osmdroid.tileprovider.MapTileProviderBasic
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.Polyline
@@ -516,7 +518,11 @@ private fun InteractiveMapView(
                 MapView(ctx).apply {
                     setTileSource(TileSourceFactory.MAPNIK)
                     setMultiTouchControls(true)
-                    controller.setZoom(13.5)
+                    minZoomLevel = 10.0
+                    maxZoomLevel = 18.0
+                    isTilesScaledToDpi = true
+                    (tileProvider as? MapTileProviderBasic)?.setOfflineFirst(true)
+                    controller.setZoom(13.0)
                     controller.setCenter(initialCenter)
                     setUseDataConnection(isOnline)
                     mapViewInstance = this
@@ -525,6 +531,15 @@ private fun InteractiveMapView(
             update = { mapView ->
                 mapView.setUseDataConnection(isOnline)
                 mapView.overlays.clear()
+
+                // OSM Mandatory Copyright Overlay (ODbL / CC-BY-SA compliance)
+                val copyrightOverlay = CopyrightOverlay(context).apply {
+                    setTextSize(10)
+                    setAlignBottom(true)
+                    setAlignRight(true)
+                    setOffset(14, 14)
+                }
+                mapView.overlays.add(copyrightOverlay)
 
                 // 1. User Position Marker
                 val userMarker = Marker(mapView).apply {
@@ -667,6 +682,13 @@ private fun InteractiveMapView(
                 LegendItem(dotColor = EmergencyRed, label = "Hospital")
                 LegendLine(lineColor = MintDeep, label = "Evacuation Route")
                 LegendLine(lineColor = EmergencyRed, label = "Flooded Hazard Zone", isDashed = true)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "© OpenStreetMap contributors",
+                    color = TextSecondary.copy(alpha = 0.75f),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
 
@@ -1006,6 +1028,48 @@ private fun OfflineRegionManagementView(
                     region = region,
                     onDownload = { onDownloadRegion(region) }
                 )
+            }
+        }
+
+        // 5. OpenStreetMap Licensing & Attribution Compliance Card
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle)
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Map,
+                            contentDescription = null,
+                            tint = MintDeep,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Map Data & Licensing Compliance",
+                            color = TextPrimary,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Map data © OpenStreetMap contributors. Cartography and map tiles are licensed under Creative Commons Attribution-ShareAlike 2.0 (CC BY-SA) and the Open Database License (ODbL).",
+                        color = TextSecondary,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Offline tile packages are pre-cached and downloaded strictly for emergency civil defense, disaster evacuation, and humanitarian life-safety response. Learn more at openstreetmap.org/copyright.",
+                        color = TextSecondary.copy(alpha = 0.85f),
+                        fontSize = 11.sp,
+                        lineHeight = 15.sp
+                    )
+                }
             }
         }
     }
